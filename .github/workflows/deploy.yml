@@ -1,0 +1,19 @@
+name: Deploy Lenguista
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Rebuild Docker Containers
+        run: |
+          docker-compose down
+          docker-compose up --build -d
+          docker image prune -f # Cleans up old image versions to save space
