@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lenguista | Welcome</title>
+    <link rel="stylesheet" href="/css/auth.css">
+    <link rel="icon" type="image/svg+xml" href="/resources/logo.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-box card">
+            <div class="auth-header">
+                <div class="logo-ring">
+                    <img src="/resources/logo.svg" alt="Lenguista Logo" style="width: 64px; height: 64px;">
+                </div>
+                <h2>Welcome to Lenguista</h2>
+                <p>Sign in to continue your learning journey</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form active">
+                <div class="input-group">
+                    <label for="login-username">Username</label>
+                    <input type="text" id="login-username" required placeholder="Enter your username">
+                </div>
+                <div class="input-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required placeholder="Enter your password">
+                </div>
+                <button type="submit" class="btn-primary">Sign In</button>
+                <p class="switch-form">Don't have an account? <span onclick="toggleForm('register')">Register
+                        here</span></p>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" class="auth-form">
+                <div class="input-group">
+                    <label for="register-username">Username</label>
+                    <input type="text" id="register-username" required placeholder="Choose a username">
+                </div>
+                <div class="input-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" required placeholder="Create a password">
+                </div>
+                <div class="input-group">
+                    <label for="register-role">I am a...</label>
+                    <select id="register-role" required>
+                        <option value="Student">Student</option>
+                        <option value="Tutor">Tutor</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">Create Account</button>
+                <p class="switch-form">Already have an account? <span onclick="toggleForm('login')">Sign In here</span>
+                </p>
+            </form>
+
+            <div id="error-message" class="error-message"></div>
+        </div>
+    </div>
+    <script src="/js/auth.js"></script>
+</body>
+
+</html>

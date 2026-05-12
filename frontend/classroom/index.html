@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lenguista Classroom</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/classroom/css/style.css">
+    <link rel="icon" type="image/svg+xml" href="/resources/logo.svg">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="logo">
+                <img src="/resources/logo.svg" alt="Lenguista Logo"
+                    style="width: 32px; height: 32px; color: var(--primary-color);">
+                <h2>Lenguista</h2>
+            </div>
+            <ul class="nav-links">
+                <li class="active"><a href="#" id="nav-classes"><i class="ph ph-books"></i> Classes</a></li>
+                <li><a href="#"><i class="ph ph-calendar"></i> Calendar</a></li>
+                <li><a href="#"><i class="ph ph-pencil-simple"></i> To-do</a></li>
+                <hr style="border-color: var(--border-color); margin: 10px 0; border-top: none;">
+                <li><a href="#"><i class="ph ph-gear"></i> Settings</a></li>
+                <li><a href="#" id="btn-logout" style="color: var(--danger-color); margin-top: 20px;"><i
+                            class="ph ph-sign-out"></i> Logout</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header class="top-header">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search for classes...">
+                </div>
+                <div class="user-profile">
+                    <button id="btn-join-meeting" class="btn-primary" style="margin-right: 10px;">
+                        <i class="ph ph-video-camera"></i> Join Meeting
+                    </button>
+                    <button id="btn-action-class" class="btn-primary" style="margin-right: 15px;">
+                        <i class="ph ph-plus"></i> <span id="action-class-text">Action</span>
+                    </button>
+                    <div id="user-avatar" class="avatar">U</div>
+                    <span id="user-name">User</span>
+                </div>
+            </header>
+
+            <div id="main-view" style="flex: 1; overflow-y: auto;">
+                <div id="empty-state" class="empty-state hidden" style="text-align: center; margin-top: 100px;">
+                    <i class="ph ph-chalkboard"
+                        style="font-size: 64px; color: var(--text-secondary); opacity: 0.5;"></i>
+                    <h3 style="margin-top: 20px; color: var(--text-primary); font-size: 1.5rem;">You don't have any
+                        classes yet</h3>
+                    <p style="color: var(--text-secondary); margin-top: 8px;">Click the button in the top right to get
+                        started.</p>
+                </div>
+
+                <div id="classes-grid-view" class="classes-grid-view hidden"
+                    style="padding: 40px; max-width: 1200px; margin: 0 auto;">
+                    <h2 style="margin-bottom: 24px; font-size: 1.5rem; color: var(--text-primary);">Your Classes</h2>
+                    <div id="classes-grid" class="classes-grid">
+                    </div>
+                </div>
+
+                <div id="class-interface" class="class-interface hidden"
+                    style="padding: 40px; max-width: 1000px; margin: 0 auto;">
+                    <button id="btn-back-to-grid" class="btn-secondary" style="margin-bottom: 20px;"><i
+                            class="ph ph-arrow-left"></i> Back to Classes</button>
+                    <div id="class-banner"
+                        style="background-color: var(--class-blue); height: 240px; border-radius: 16px; position: relative; padding: 24px; color: white; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; margin-bottom: 24px;">
+                        <h1 id="class-title" style="font-size: 2.5rem; margin-bottom: 8px; z-index: 2;">Class Name</h1>
+                        <p id="class-description" style="font-size: 1.1rem; opacity: 0.9; z-index: 2;">Description</p>
+                        <div
+                            style="position: absolute; top: 24px; right: 24px; background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 8px; z-index: 2;">
+                            <span style="font-size: 0.9rem; font-weight: 500;">Class Code: <span
+                                    id="class-code-display">------</span></span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 24px;">
+                        <div style="width: 250px;">
+                            <div class="card" style="margin-top: 0; padding: 20px;">
+                                <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 12px;">Upcoming
+                                </h3>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem;">No work due soon</p>
+                                <a href="#"
+                                    style="display: block; margin-top: 16px; color: var(--primary-color); text-decoration: none; font-size: 0.9rem; font-weight: 500;">View
+                                    all</a>
+                            </div>
+                        </div>
+
+                        <div style="flex: 1;">
+                            <div id="tutor-controls" class="tutor-controls-container hidden">
+                                <button id="btn-create-announcement" class="btn-primary" style="flex: 1;"><i
+                                        class="ph ph-megaphone"></i> Create Announcement</button>
+                                <button id="btn-create-assignment" class="btn-primary" style="flex: 1;"><i
+                                        class="ph ph-clipboard-text"></i> Create Assignment</button>
+                                <button id="btn-program-meeting" class="btn-primary" style="flex: 1;"><i
+                                        class="ph ph-video-camera"></i> Program a Meeting</button>
+                            </div>
+
+                            <div id="feed-stream">
+                            </div>
+                            <div id="empty-feed" class="card hidden"
+                                style="text-align: center; padding: 40px; color: var(--text-secondary); margin-top: 0;">
+                                <i class="ph ph-chat-text"
+                                    style="font-size: 32px; margin-bottom: 10px; display: block;"></i>
+                                This Class is Empty
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="post-detailed-view" class="hidden" style="padding: 40px; max-width: 1000px; margin: 0 auto;">
+                    <button id="btn-back-to-class" class="btn-secondary" style="margin-bottom: 20px;"><i
+                            class="ph ph-arrow-left"></i> Back to Class</button>
+
+                    <div style="display: flex; gap: 24px;">
+                        <div style="flex: 1;">
+                            <div class="card" style="margin-top: 0;">
+                                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                                    <div id="post-detail-icon"
+                                        style="width: 48px; height: 48px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                                        <i class="ph ph-clipboard-text"></i>
+                                    </div>
+                                    <div>
+                                        <h1 id="post-detail-title"
+                                            style="font-size: 1.8rem; color: var(--text-primary); margin-bottom: 4px;">
+                                            Title</h1>
+                                        <div style="color: var(--text-secondary); font-size: 0.9rem;"><span
+                                                id="post-detail-author">Author</span> • <span
+                                                id="post-detail-time">Time</span></div>
+                                    </div>
+                                </div>
+                                <div id="post-detail-desc"
+                                    style="color: var(--text-primary); line-height: 1.6; margin-bottom: 24px; white-space: pre-wrap;">
+                                    Description</div>
+
+                                <!-- Meeting info card (shown for meeting posts) -->
+                                <div id="post-detail-meeting-info" class="hidden"
+                                    style="background: var(--bg-dark); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                        <i class="ph ph-calendar"
+                                            style="font-size: 20px; color: var(--primary-color);"></i>
+                                        <span id="post-detail-meeting-date"
+                                            style="font-weight: 600; color: var(--text-primary);"></span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <i class="ph ph-key" style="font-size: 20px; color: var(--primary-color);"></i>
+                                        <span style="color: var(--text-secondary);">Meeting Code: </span>
+                                        <span id="post-detail-meeting-code"
+                                            style="font-weight: 700; letter-spacing: 3px; color: var(--primary-color); font-size: 1.1rem;"></span>
+                                    </div>
+                                    <button id="btn-join-meeting-from-post" class="btn-primary"
+                                        style="width: 100%; justify-content: center; margin-top: 16px;">
+                                        <i class="ph ph-video-camera"></i> Join Meeting
+                                    </button>
+                                </div>
+
+                                <div id="post-detail-attachments-section" class="hidden">
+                                    <h3 style="font-size: 1.1rem; margin-bottom: 15px; color: var(--text-primary);">
+                                        Attached Files</h3>
+                                    <div id="post-detail-attachments"
+                                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="submission-panel" class="hidden" style="width: 300px;">
+                            <div class="card" style="margin-top: 0;">
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                    <h3 style="font-size: 1.2rem; color: var(--text-primary);">Your work</h3>
+                                    <span style="color: var(--success-color); font-weight: 500; font-size: 0.9rem;"
+                                        id="submission-status">Assigned</span>
+                                </div>
+
+                                <div id="student-submissions-list"
+                                    style="margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;">
+                                </div>
+
+                                <button id="btn-attach-submission" class="btn-secondary"
+                                    style="width: 100%; justify-content: center; margin-bottom: 15px;"><i
+                                        class="ph ph-plus"></i> Add or create</button>
+                                <button id="btn-turn-in" class="btn-primary"
+                                    style="width: 100%; justify-content: center;">Turn in</button>
+                            </div>
+
+                            <!-- Private Comments Section -->
+                            <div class="card private-comments-card" style="margin-top: 16px;">
+                                <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 12px;">
+                                    <i class="ph ph-lock-simple" style="margin-right: 6px;"></i>Private comments
+                                </h3>
+                                <div id="private-comments-list" class="private-comments-list">
+                                    <p class="private-comments-empty"
+                                        style="color: var(--text-secondary); font-size: 0.85rem; text-align: center; padding: 16px 0;">
+                                        Add a private comment to your teacher</p>
+                                </div>
+                                <div class="private-comments-input-area">
+                                    <input type="text" id="private-comment-input" placeholder="Add private comment..."
+                                        class="private-comment-input">
+                                    <button id="btn-send-private-comment" class="btn-primary btn-icon-only"
+                                        title="Send">
+                                        <i class="ph ph-paper-plane-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tutor comments panel (shown for tutors viewing assignments) -->
+                        <div id="tutor-comments-panel" class="hidden" style="width: 300px;">
+                            <div class="card" style="margin-top: 0;">
+                                <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 12px;">
+                                    <i class="ph ph-lock-simple" style="margin-right: 6px;"></i>Private comments
+                                </h3>
+                                <div id="tutor-private-comments-list" class="private-comments-list">
+                                    <p class="private-comments-empty"
+                                        style="color: var(--text-secondary); font-size: 0.85rem; text-align: center; padding: 16px 0;">
+                                        No private comments yet</p>
+                                </div>
+                                <div class="private-comments-input-area">
+                                    <input type="text" id="tutor-private-comment-input"
+                                        placeholder="Reply to students..." class="private-comment-input">
+                                    <button id="btn-tutor-send-comment" class="btn-primary btn-icon-only" title="Send">
+                                        <i class="ph ph-paper-plane-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create Class Modal -->
+    <div id="modal-create-class" class="modal hidden">
+        <div class="modal-content card">
+            <h2 style="margin-bottom: 20px;">Create Class</h2>
+            <form id="form-create-class" novalidate>
+                <div class="input-group">
+                    <label>Class Name</label>
+                    <input type="text" id="create-class-name" required class="modal-input">
+                </div>
+                <div class="input-group">
+                    <label>Description <span class="optional-marker">*</span></label>
+                    <input type="text" id="create-class-desc" class="modal-input">
+                </div>
+                <div class="input-group">
+                    <label>Theme Color</label>
+                    <div id="color-chooser" style="display: flex; gap: 12px; margin-top: 8px;">
+                        <div class="color-option selected" style="background-color: var(--class-blue);"
+                            data-color="var(--class-blue)"></div>
+                        <div class="color-option" style="background-color: var(--class-red);"
+                            data-color="var(--class-red)"></div>
+                        <div class="color-option" style="background-color: var(--class-green);"
+                            data-color="var(--class-green)"></div>
+                        <div class="color-option" style="background-color: var(--class-purple);"
+                            data-color="var(--class-purple)"></div>
+                        <div class="color-option" style="background-color: var(--class-orange);"
+                            data-color="var(--class-orange)"></div>
+                        <div class="color-option" style="background-color: var(--class-yellow);"
+                            data-color="var(--class-yellow)"></div>
+                    </div>
+                    <input type="hidden" id="create-class-color" value="var(--class-blue)">
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px;">
+                    <button type="button" class="btn-secondary" id="btn-cancel-create">Cancel</button>
+                    <button type="submit" class="btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Join Class Modal -->
+    <div id="modal-join-class" class="modal hidden">
+        <div class="modal-content card">
+            <h2 style="margin-bottom: 20px;">Join Class</h2>
+            <form id="form-join-class" novalidate>
+                <div class="input-group">
+                    <label>Class Code</label>
+                    <input type="text" id="join-class-code" required maxlength="6" style="text-transform: uppercase;"
+                        class="modal-input">
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px;">
+                    <button type="button" class="btn-secondary" id="btn-cancel-join">Cancel</button>
+                    <button type="submit" class="btn-primary">Join</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Join Meeting Modal -->
+    <div id="modal-join-meeting" class="modal hidden">
+        <div class="modal-content card">
+            <h2 style="margin-bottom: 20px;"><i class="ph ph-video-camera"
+                    style="margin-right: 8px;"></i>Join Meeting</h2>
+            <form id="form-join-meeting" novalidate>
+                <div class="input-group">
+                    <label>Meeting Code</label>
+                    <input type="text" id="join-meeting-code" required maxlength="6" style="text-transform: uppercase;"
+                        class="modal-input">
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px;">
+                    <button type="button" class="btn-secondary"
+                        onclick="document.getElementById('modal-join-meeting').classList.add('hidden')">Cancel</button>
+                    <button type="submit" class="btn-primary"><i class="ph ph-video-camera"></i> Join</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Announcement Modal -->
+    <div id="modal-create-announcement" class="modal hidden">
+        <div class="modal-content card" style="max-width: 600px;">
+            <h2 style="margin-bottom: 20px;">Create Announcement</h2>
+            <form id="form-create-announcement" novalidate>
+                <div class="input-group">
+                    <label>Title</label>
+                    <input type="text" id="announce-title" required maxlength="50" class="modal-input">
+                </div>
+                <div class="input-group">
+                    <label>Description</label>
+                    <textarea id="announce-desc" required maxlength="1000" class="modal-input"
+                        style="height: 100px; resize: none; font-family: 'Inter', sans-serif;"></textarea>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px;">
+                    <button type="button" class="btn-secondary"
+                        onclick="document.getElementById('modal-create-announcement').classList.add('hidden')">Cancel</button>
+                    <button type="submit" class="btn-primary">Post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Assignment Modal -->
+    <div id="modal-create-assignment" class="modal hidden">
+        <div class="modal-content card" style="max-width: 600px;">
+            <h2 style="margin-bottom: 20px;">Create Assignment</h2>
+            <form id="form-create-assignment" novalidate>
+                <div class="input-group">
+                    <label>Title</label>
+                    <input type="text" id="assign-title" required maxlength="50" class="modal-input">
+                </div>
+                <div class="input-group">
+                    <label>Description <span class="optional-marker">*</span></label>
+                    <textarea id="assign-desc" maxlength="1000" class="modal-input"
+                        style="height: 100px; resize: none; font-family: 'Inter', sans-serif;"></textarea>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <div class="input-group" style="flex: 1;">
+                        <label>Score <span class="optional-marker">*</span></label>
+                        <input type="number" id="assign-score" class="modal-input">
+                    </div>
+                    <div class="input-group" style="flex: 1;">
+                        <label>Due Date <span class="optional-marker">*</span></label>
+                        <input type="date" id="assign-due" class="modal-input">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Attachments <span class="optional-marker">*</span></label>
+                    <label class="custom-file-input">
+                        <input type="file" id="assign-files" multiple>
+                        <span class="custom-file-btn"><i class="ph ph-upload-simple"></i> Choose Files</span>
+                        <span class="custom-file-name" id="assign-files-name">No files selected</span>
+                    </label>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px;">
+                    <button type="button" class="btn-secondary"
+                        onclick="document.getElementById('modal-create-assignment').classList.add('hidden')">Cancel</button>
+                    <button type="submit" class="btn-primary">Assign</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Program a Meeting Modal -->
+    <div id="modal-create-meeting" class="modal hidden">
+        <div class="modal-content card" style="max-width: 500px;">
+            <h2 style="margin-bottom: 20px;"><i class="ph ph-video-camera"
+                    style="margin-right: 8px;"></i>Program a Meeting</h2>
+            <form id="form-create-meeting" novalidate>
+                <div class="input-group">
+                    <label>Meeting Name</label>
+                    <input type="text" id="meeting-name" required maxlength="50" class="modal-input">
+                </div>
+                <div class="input-group">
+                    <label>Description <span class="optional-marker">*</span></label>
+                    <textarea id="meeting-desc" maxlength="500" class="modal-input"
+                        style="height: 80px; resize: none; font-family: 'Inter', sans-serif;"></textarea>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <div class="input-group" style="flex: 1;">
+                        <label>Date</label>
+                        <input type="date" id="meeting-date" required class="modal-input">
+                    </div>
+                    <div class="input-group" style="flex: 1;">
+                        <label>Time</label>
+                        <input type="time" id="meeting-time" required class="modal-input">
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px;">
+                    <button type="button" class="btn-secondary"
+                        onclick="document.getElementById('modal-create-meeting').classList.add('hidden')">Cancel</button>
+                    <button type="submit" class="btn-primary"><i class="ph ph-calendar-plus"></i> Schedule</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Meeting Created Success Modal -->
+    <div id="modal-meeting-created" class="modal hidden">
+        <div class="modal-content card" style="max-width: 420px; text-align: center;">
+            <div
+                style="width: 64px; height: 64px; border-radius: 50%; background: var(--success-color); color: white; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px;">
+                <i class="ph ph-check"></i>
+            </div>
+            <h2 style="margin-bottom: 8px;">Meeting Scheduled!</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">Share this code with your students so they
+                can join.</p>
+            <div
+                style="background: var(--bg-dark); border-radius: 12px; padding: 20px; margin-bottom: 20px; position: relative;">
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">Meeting Code</p>
+                <p id="meeting-code-result"
+                    style="font-size: 2rem; font-weight: 700; letter-spacing: 6px; color: var(--primary-color);">------
+                </p>
+                <p id="meeting-datetime-result"
+                    style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 10px;"></p>
+            </div>
+            <button class="btn-primary" style="width: 100%; justify-content: center;"
+                onclick="document.getElementById('modal-meeting-created').classList.add('hidden')">Done</button>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="modal-confirm" class="modal hidden">
+        <div class="modal-content card" style="max-width: 400px; text-align: center;">
+            <div id="confirm-icon-container" style="width: 64px; height: 64px; border-radius: 50%; background: #ef4444; color: white; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px;">
+                <i class="ph ph-trash"></i>
+            </div>
+            <h2 id="confirm-title" style="margin-bottom: 10px;">Are you sure?</h2>
+            <p id="confirm-message" style="color: var(--text-secondary); margin-bottom: 24px;">This action cannot be undone.</p>
+            <div style="display: flex; gap: 12px;">
+                <button id="btn-confirm-cancel" class="btn-secondary" style="flex: 1; justify-content: center;">Cancel</button>
+                <button id="btn-confirm-action" class="btn-primary" style="flex: 1; justify-content: center; background: #ef4444; border-color: #ef4444;">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="modal-error" class="modal hidden">
+        <div class="modal-content card" style="max-width: 400px; text-align: center;">
+            <div style="width: 64px; height: 64px; border-radius: 50%; background: #ef4444; color: white; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px;">
+                <i class="ph ph-warning-circle"></i>
+            </div>
+            <h2 id="error-title" style="margin-bottom: 10px;">Error</h2>
+            <p id="error-message" style="color: var(--text-secondary); margin-bottom: 24px;">Something went wrong. Please try again.</p>
+            <button class="btn-primary" style="width: 100%; justify-content: center;" onclick="document.getElementById('modal-error').classList.add('hidden')">Close</button>
+        </div>
+    </div>
+
+    <script src="/classroom/js/app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lenguista Meet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/svg+xml" href="/resources/logo.svg">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <main class="main-content">
+            <header class="top-header">
+                <div class="room-info">
+                    <img src="/resources/logo.svg" alt="Lenguista Logo"
+                        style="width: 32px; height: 32px; color: var(--primary-color);">
+                    <h2 class="room-title" id="room-name">Main Room</h2>
+                </div>
+                <div class="teacher-controls hidden" id="teacher-controls">
+                    <button id="btn-create-groups" class="btn-primary" title="Breakout Rooms">
+                        <i class="ph ph-users-four"></i> Breakout
+                    </button>
+                    <button id="btn-return-all" class="btn-secondary hidden" title="End Breakout">
+                        <i class="ph ph-arrow-u-up-left"></i> End
+                    </button>
+                    <div id="breakout-timer-display" class="breakout-timer hidden">
+                        <i class="ph ph-clock"></i> <span id="timer-countdown">00:00</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="workspace-area">
+                <div id="grid-videos" class="grid-videos active">
+                    <div class="video-container" id="local-container">
+                        <video id="local-video" class="mirror" autoplay muted playsinline></video>
+                        <div class="camera-off-overlay hidden" id="local-camera-off">
+                            <div class="camera-off-avatar" id="local-camera-avatar">U</div>
+                        </div>
+                        <div class="speaking-indicator" id="local-speaking">
+                            <span></span><span></span><span></span>
+                            <i class="ph ph-microphone-slash muted-icon"></i>
+                        </div>
+                        <p class="user-name">Me</p>
+                    </div>
+                </div>
+
+                <div id="whiteboard-container" class="whiteboard-container hidden">
+                    <canvas id="whiteboard-canvas"></canvas>
+                </div>
+            </div>
+            <div id="bottom-control-bar" class="bottom-controls">
+                <button id="btn-mute" class="btn-circular" title="Mute/Unmute"><i class="ph ph-microphone"></i></button>
+                <button id="btn-camera" class="btn-circular" title="Turn Camera On/Off"><i
+                        class="ph ph-video-camera"></i></button>
+                <button id="btn-screen" class="btn-circular" title="Share Screen"><i
+                        class="ph ph-screencast"></i></button>
+                <button id="btn-whiteboard" class="btn-circular" title="Interactive Whiteboard"><i
+                        class="ph ph-chalkboard"></i></button>
+                <button id="btn-chat-toggle" class="btn-circular" title="Open/Close Chat"><i
+                        class="ph ph-chat-circle-text"></i></button>
+            </div>
+        </main>
+
+        <aside class="side-panel" id="side-panel">
+            <div class="panel-header">
+                <h3>Room Chat</h3>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Type a message...">
+                <button id="btn-send-chat" class="btn-send btn-icon-only" title="Send"><i
+                        class="ph ph-paper-plane-right"></i></button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="modal" style="background-color: var(--bg-dark); color: var(--text-primary);">
+        <div class="modal-content" style="text-align: center;">
+            <div class="spinner" style="width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+            <p>Validating meeting code...</p>
+        </div>
+    </div>
+
+    <!-- Invalid Meeting Overlay -->
+    <div id="invalid-meeting-overlay" class="modal hidden" style="background-color: var(--bg-dark); color: var(--text-primary);">
+        <div class="modal-content card" style="text-align: center; max-width: 400px;">
+            <div style="width: 64px; height: 64px; border-radius: 50%; background: #ef4444; color: white; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px;">
+                <i class="ph ph-warning-circle"></i>
+            </div>
+            <h2 style="margin-bottom: 10px;">Meeting Not Found</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 24px;">The meeting code you entered is invalid or has expired. Please check with your tutor.</p>
+            <button class="btn-primary" style="width: 100%; justify-content: center;" onclick="window.location.href='/classroom/'">Back to Classroom</button>
+        </div>
+    </div>
+
+    <!-- Breakout Rooms Modal -->
+    <div id="modal-breakout-config" class="modal hidden" style="background-color: var(--bg-dark); color: var(--text-primary);">
+        <div class="modal-content card" style="max-width: 400px;">
+            <h2 style="margin-bottom: 20px;"><i class="ph ph-users-four"></i> Breakout Rooms</h2>
+            
+            <div class="input-group">
+                <label>Students per Group</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="number" id="group-size" value="4" min="2" max="10" class="modal-input" style="flex: 1;">
+                    <span style="color: var(--text-secondary);">students</span>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Duration (minutes)</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="number" id="breakout-duration" value="15" min="1" max="60" class="modal-input" style="flex: 1;">
+                    <span style="color: var(--text-secondary);">min</span>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button class="btn-secondary" style="flex: 1; justify-content: center;" onclick="document.getElementById('modal-breakout-config').classList.add('hidden')">Cancel</button>
+                <button id="btn-start-breakout" class="btn-primary" style="flex: 1; justify-content: center;">Start</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,53 @@
+:root {
+    /* Dark Theme */
+    --dark-primary: #121212;
+    --dark-secondary: #1e1e1e;
+
+    /* Light Theme */
+    --light-primary: #f8fafc;
+    --light-secondary: #ffffff;
+
+    /* Global Accents */
+    --accent-primary: #3b82f6;
+    /* Blue */
+    --accent-secondary: #2563eb;
+    /* Darker blue */
+    --error-color: #ef4444;
+    --success-color: #22c55e;
+
+    /* Class Accent Colors - Muted */
+    --class-red: #cc5b5b;
+    --class-orange: #d07a4a;
+    --class-yellow: #c8a14b;
+    --class-green: #59a665;
+    --class-light-blue: #4fa1c4;
+    --class-blue: #557dbf;
+    --class-purple: #936fb1;
+
+    /* Semantic mapping (Light Mode Default) */
+    --bg-dark: var(--light-primary);
+    --bg-card: var(--light-secondary);
+    --card-bg: var(--light-secondary);
+    --bg-card-hover: #f1f5f9;
+    --primary-color: var(--accent-primary);
+    --primary-hover: var(--accent-secondary);
+    --secondary-color: #0ea5e9;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --input-bg: #ffffff;
+    --danger-color: var(--error-color);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-dark: var(--dark-primary);
+        --bg-card: var(--dark-secondary);
+        --card-bg: var(--dark-secondary);
+        --bg-card-hover: #2a2a2a;
+        --text-primary: #f3f4f6;
+        --text-secondary: #9ca3af;
+        --border-color: #374151;
+        --input-bg: #2a2a2a;
+    }
+}
