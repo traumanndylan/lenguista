@@ -429,7 +429,7 @@ btnScreen.addEventListener('click', async () => {
 
 btnChatToggle.addEventListener('click', () => {
     sidePanel.classList.toggle('open');
-    btnChatToggle.classList.toggle('activo');
+    btnChatToggle.classList.toggle('active');
     document.querySelector('.main-content').classList.toggle('chat-open');
 });
 
@@ -447,7 +447,7 @@ chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessa
 socket.on('new_message', (data) => {
     addChatMessage(`User ${data.sender.substring(0, 4)}`, data.text, false);
     if (!sidePanel.classList.contains('open')) {
-        btnChatToggle.classList.add('activo');
+        btnChatToggle.classList.add('active');
     }
 });
 

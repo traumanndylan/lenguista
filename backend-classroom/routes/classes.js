@@ -57,7 +57,7 @@ router.post('/join', verifyToken, requireRole('Student'), async (req, res) => {
         if (!targetClass) {
             return res.status(404).json({ error: 'Class not found with that code' });
         }
-        
+
         if (!targetClass.students.includes(req.user.id)) {
             targetClass.students.push(req.user.id);
             await targetClass.save();
@@ -142,7 +142,6 @@ router.delete('/:classId/posts/:postId', verifyToken, requireRole('Tutor'), asyn
     }
 });
 
-// --- MEETINGS ---
 
 // Validate a meeting code
 router.get('/meetings/validate/:code', verifyToken, async (req, res) => {
@@ -214,8 +213,6 @@ router.get('/:classId/meetings', verifyToken, async (req, res) => {
     }
 });
 
-// --- PRIVATE COMMENTS ---
-
 // Create a private comment on a post
 router.post('/:classId/posts/:postId/comments', verifyToken, async (req, res) => {
     try {
@@ -240,8 +237,6 @@ router.post('/:classId/posts/:postId/comments', verifyToken, async (req, res) =>
     }
 });
 
-// Get private comments for a post
-// Students see only their own thread; Tutors see all comments
 router.get('/:classId/posts/:postId/comments', verifyToken, async (req, res) => {
     try {
         let query = {
@@ -250,8 +245,6 @@ router.get('/:classId/posts/:postId/comments', verifyToken, async (req, res) => 
         };
 
         if (req.user.role === 'Student') {
-            // Students only see comments they wrote or that the tutor wrote to them
-            // We filter to: comments by this student, or comments by tutor in threads where this student has commented
             const studentComments = await PrivateComment.find({
                 postId: req.params.postId,
                 classId: req.params.classId,
@@ -263,7 +256,6 @@ router.get('/:classId/posts/:postId/comments', verifyToken, async (req, res) => 
             return res.json(studentComments);
         }
 
-        // Tutors see all comments
         const comments = await PrivateComment.find(query).sort({ createdAt: 1 });
         res.json(comments);
     } catch (err) {

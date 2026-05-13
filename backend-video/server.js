@@ -20,12 +20,12 @@ function getUsersInRoom(roomName) {
 io.on('connection', (socket) => {
     const roomID = socket.handshake.query.room || 'Main-Room';
     console.log(`New user connected: ${socket.id} to room: ${roomID}`);
-    
+
     socket.join(roomID);
     connectedUsers[socket.id] = roomID;
 
     socket.to(roomID).emit('new_peer', { userId: socket.id });
-    
+
     const existingPeers = getUsersInRoom(roomID).filter(id => id !== socket.id);
     socket.emit('peer_list', existingPeers);
 
@@ -42,12 +42,12 @@ io.on('connection', (socket) => {
             if (studentSocket) {
                 const groupNum = Math.floor(index / groupSize) + 1;
                 const newRoomName = `${currentRoom}-Group-${groupNum}`;
-                
+
                 studentSocket.leave(currentRoom);
                 studentSocket.join(newRoomName);
-                
+
                 io.to(userId).emit('room_change', { roomName: newRoomName, duration: duration });
-                
+
                 const peers = getUsersInRoom(newRoomName).filter(id => id !== userId);
                 io.to(userId).emit('peer_list', peers);
                 studentSocket.to(newRoomName).emit('new_peer', { userId: userId });
@@ -57,7 +57,7 @@ io.on('connection', (socket) => {
 
     socket.on('end_breakout', () => {
         const originalRoom = connectedUsers[socket.id];
-        
+
         Object.keys(connectedUsers).forEach(userId => {
             if (connectedUsers[userId] === originalRoom) {
                 const studentSocket = io.sockets.sockets.get(userId);
@@ -65,14 +65,14 @@ io.on('connection', (socket) => {
                     studentSocket.rooms.forEach(room => {
                         if (room !== userId) studentSocket.leave(room);
                     });
-                    
+
                     studentSocket.join(originalRoom);
-                    
+
                     io.to(userId).emit('room_change', { roomName: originalRoom });
-                    
+
                     const peers = getUsersInRoom(originalRoom).filter(id => id !== userId);
                     io.to(userId).emit('peer_list', peers);
-                    
+
                     studentSocket.to(originalRoom).emit('new_peer', { userId: userId });
                 }
             }

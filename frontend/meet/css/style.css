@@ -62,7 +62,7 @@ body {
     font-size: 1.2rem;
 }
 
-.titulo-sala {
+.room-title {
     font-size: 1.2rem;
     font-weight: 600;
     color: var(--text-primary);
@@ -163,7 +163,7 @@ body {
     transform: scaleX(-1);
 }
 
-.video-container video.espejo {
+.video-container video.mirror {
     transform: scaleX(-1);
 }
 
@@ -266,7 +266,7 @@ body {
     }
 }
 
-.nombre-usuario {
+.user-name {
     position: absolute;
     bottom: 10px;
     left: 10px;
@@ -351,7 +351,7 @@ body {
     color: white !important;
 }
 
-.btn-circular.activo {
+.btn-circular.active {
     background-color: var(--primary-color) !important;
     color: white !important;
 }

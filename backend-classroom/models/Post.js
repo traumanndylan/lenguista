@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const postSchema = new mongoose.Schema({
     classId: { type: mongoose.Schema.Types.ObjectId, ref: 'Class', required: true },
     type: { type: String, enum: ['announcement', 'assignment', 'meeting'], required: true },
-    author: { type: String, required: true }, // username of tutor
+    author: { type: String, required: true },
     title: { type: String, required: true },
     text: { type: String },
     score: { type: Number },
@@ -13,7 +13,7 @@ const postSchema = new mongoose.Schema({
     attachments: [{
         type: { type: String, enum: ['file', 'link'] },
         name: String,
-        url: String, // Google Drive URL or standard link
+        url: String,
         size: String
     }]
 }, { timestamps: true });

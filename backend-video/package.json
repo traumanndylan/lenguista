@@ -1,7 +1,7 @@
 {
   "name": "meet-clone-backend",
   "version": "1.0.0",
-  "description": "Servidor de señalización y salas para clon de Meet",
+  "description": "Signaling and room server for Meet clone",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
