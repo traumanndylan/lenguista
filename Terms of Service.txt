@@ -1,0 +1,44 @@
+﻿Terms of Service
+
+
+Last Updated: May 15, 2026
+
+
+By accepting these Terms of Service (“ToS”), you agree to be bound by them. Please read these ToS carefully. Lenguista reserves the right to modify these ToS at any time. In the event of a change, we will notify all registered users of the updates both in-app and via email in advance. Continued use of the platform after such notifications constitutes your acceptance of the revised ToS.
+
+
+Lenguista as a Service        
+Lenguista operates as a digital infrastructure and communication bridge connecting independent educators (“Tutors”) with corporate or individual learners (“Clients”). Lenguista solely provides its platform; it does not employ Tutors, nor does it direct their teaching, curriculum, or instructional methods.
+Tutors operate as independent entities. They are solely responsible for setting their own rates and course prices, determining the length, frequency, and structure of their courses, and providing their own teaching materials. Furthermore, Tutors acknowledge that the Service and its authorized partners may collect a percentage-based service fee on any exchange made possible by the platform. Specific fee structures are disclosed after soliciting a verification code. All refunds must be managed exclusively between Tutors and Clients.
+
+
+Accounts & Privacy
+Tutor accounts are not available through open registration and require a unique verification code, which users agree not to share, sell, or distribute to unauthorized third parties. These codes are issued and provided directly by Lenguista via direct communication or through authorized partners. Lenguista is not responsible for lost verification codes.
+Lenguista does not store any sensitive or unrelated personal information of users, and all file uploads, video data, and messages are encrypted. Additionally, Lenguista will not share, provide, or sell any account data or private information to any unauthorized third party. You can learn more by reading our Privacy Policy.
+User Content and Intellectual Property
+Users are strictly prohibited from utilizing Lenguista to upload, stream, or share malware, illegal content, or copyrighted material they do not own. We reserve the right to immediately terminate accounts that violate this policy. Lenguista is not legally responsible for the user-generated content mentioned above, nor is it liable for the behavior, statements, or conduct of users during live video meetings.
+The underlying source code for the Lenguista platform is open-source and distributed under the GNU Affero General Public License v3 (AGPLv3) to ensure transparency. Users may modify and distribute the code available in its GitHub Repository under the exact same AGPLv3 license with proper attribution. Note that this open-source license applies to the software code, not to the private data, content, or hosting infrastructure managed by Lenguista. Use of the Service or source code does not grant you any rights to use the “Lenguista” name, logo, or related branding.
+Third-Party Links, Sites, and Services
+The Service may contain links to third-party websites, that are not owned or controlled by Lenguista- We do not endorse or assume any responsibility for any such third-party sites, information, or materials. You can learn more by reading our Privacy Policy.
+
+
+Service Availability and Data
+While Lenguista is designed for high availability, we are not liable for disruptions, server downtime, or missed classes resulting from technical failures beyond our control. Users are encouraged to maintain their own backups of essential teaching materials.
+
+
+Limitation of Liability
+Lenguista is provided on an “As Is” and “As Available” basis. To the maximum extent permitted by law, Lenguista disclaims all warranties, express or implied. In no event shall we be liable for any indirect, incidental, or consequential damages arising out of your use of the Service.
+
+
+Termination
+Lenguista reserves the right to suspend or terminate access to the Service for any user who violates these ToS, engages in fraudulent activity, or disrupts the educational environment of the platform.
+
+
+Governing Law
+These Terms shall be governed by and construed in accordance with the laws of the Republic of Nicaragua.
+
+
+
+
+Contact Information
+For any inquiries regarding these ToS, please reach out to [Email]

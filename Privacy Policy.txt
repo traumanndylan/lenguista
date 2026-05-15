@@ -1,0 +1,52 @@
+﻿Privacy Policy
+
+
+Last Update: May 15, 2026
+
+
+For Lenguista (“Service”, “We”, “Us”), your privacy is our priority. This Privacy Policy (“Policy”) explains how we handle your information, privacy, and security, and it applies to every service provided by Lenguista. By accepting Lenguista’s Terms of Service, you accept this Privacy Policy. Lenguista reserves the right to modify this Policy at any time. In the event of a change, we will notify all registered users of the updates both in-app and via email in advance. Continued use of the platform after such notifications constitutes your acceptance of the revised Policy.
+
+
+
+
+Zero-Knowledge Architecture & Transparency
+We operate under a “Zero-Knowledge” philosophy. We do not want to keep, sell, or monetize any personal data. To ensure transparency, Lenguista’s entire source code is open-source and available for public audit in its GitHub Repository under the GNU Affero General Public License v3. This allows anyone to freely verify how data is processed, protected, and stored.
+
+
+Information We Collect
+While using Lenguista, you will be requested to grant only the permissions necessary to provide optional features, which may include the following: 
+
+
+Account Registration: To register for a Lenguista account, you may provide us with a username and email address for account creation and verification. Additionally, you may register using certain social logins, such as Google. If you register for Lenguista using a social login, Lenguista may receive information about you from your social login provider, including your email address, name, and profile picture. You can manage your account and social logins within the app settings.
+
+
+Profile Information: After you register for a Lenguista account, a profile page will be created for you (“Profile”). Your Profile will contain the information you submit, such as your name, contact information, profile picture, and username. Lenguista may restrict or delete Profile information if it violates the Terms of Service.
+
+
+Video Meetings: Lenguista offers video meetings to facilitate teaching and communication between users. Inside a video meeting, you may be prompted to allow both camera and microphone access for the meeting’s purpose. All audio and video streams are encrypted through methods like Datagram Transport Layer Security (DTLS) and Secure Real-Time Protocol (SRTP), and Lenguista does not record any video meetings.
+
+
+Cookies: When you access Lenguista, we use essential session cookies (JWT) solely for the purpose of keeping you logged in and securing your session. We do not use tracking or advertisement cookies. If you do not want any data collected by cookies, you can disable them within the app settings; however, cookies may be necessary to keep your account logged in.
+Google Services: In addition to user registration, you may be optionally prompted to connect your Google Drive or Google Calendar to the Service. We can only read and write information that you provide or that is related to course activity.
+
+
+
+
+Data Retention and Deletion
+All course-specific data and temporary files are permanently purged from our active systems after course completion or upon your request. We do not store your Google Drive content or Calendar history on our servers beyond what is necessary for active processing.
+
+
+Personal Information Security
+We never share, provide, or sell any personal information to unauthorized third parties. Any data provided is exclusively used for the platform’s intended purposes. All data is encrypted at rest and in transit using TLS 1.3. End-to-End Encryption is used whenever possible, in addition to the previously mentioned audio and video stream security protocols.
+
+
+Third-Party Links, Sites, and Services
+The Service may contain links to other websites. Lenguista is not responsible for the content or privacy practices of other websites, including any personal information collected by third-party processors. We encourage users to be aware of the privacy policies of other websites they visit. This Policy applies only to the information collected by Lenguista, and anytime you enter a link or submit your personal information to a third-party website, you will be subject to that third party’s privacy policies. 
+
+
+Google API Disclosure
+Lenguista’s use and transfer of information received from Google APIs to any other app will adhere to Google API Services User Data Policy, including the Limited Use requirements.
+
+
+Contact Us
+For any inquiries regarding this Policy, please reach out to [Email]

@@ -7,6 +7,7 @@ const fs = require('fs');
 const { google } = require('googleapis');
 const crypto = require('crypto');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 
 const authRoutes = require('./routes/auth');
 const { verifyToken, requireRole } = require('./middleware/auth');
@@ -25,8 +26,21 @@ oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
 const driveService = google.drive({ version: 'v3', auth: oauth2Client });
 
-app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
+app.use(cookieParser());
+
+app.use((req, res, next) => {
+    if (req.method === 'GET' && !req.cookies['XSRF-TOKEN']) {
+        const csrfToken = crypto.randomBytes(32).toString('hex');
+        res.cookie('XSRF-TOKEN', csrfToken, {
+            sameSite: 'Lax',
+            secure: process.env.NODE_ENV === 'production',
+            httpOnly: false
+        });
+    }
+    next();
+});
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://database:27017/lenguista')
     .then(() => console.log('Connected to MongoDB'))

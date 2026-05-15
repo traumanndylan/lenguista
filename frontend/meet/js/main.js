@@ -4,27 +4,24 @@ const route = window.location.pathname;
 let roomID = 'Main-Room';
 const routeParts = window.location.pathname.split('/').filter(p => p);
 if (routeParts.length > 0) {
-    // If the path is /meet/CODE, the code is the last part
     if (routeParts.includes('meet')) {
         const meetIndex = routeParts.indexOf('meet');
         if (routeParts.length > meetIndex + 1) {
             roomID = routeParts[meetIndex + 1];
         }
     } else {
-        // Fallback for other path structures
         roomID = routeParts[routeParts.length - 1];
     }
 }
-roomID = roomID.toUpperCase(); // Ensure it's uppercase for validation
+roomID = roomID.toUpperCase();
 
 const myUsername = localStorage.getItem('username') || 'User';
 const myInitial = myUsername.charAt(0).toUpperCase();
 
-// Set local camera-off avatar
 const localCameraAvatar = document.getElementById('local-camera-avatar');
 if (localCameraAvatar) localCameraAvatar.innerText = myInitial;
 
-const socket = io(`http://${serverAddress}:8000`, { 
+const socket = io(`http://${serverAddress}:8000`, {
     autoConnect: false,
     query: { room: roomID }
 });
@@ -51,12 +48,11 @@ const btnSendChat = document.getElementById('btn-send-chat');
 const whiteboardContainer = document.getElementById('whiteboard-container');
 const whiteboardCanvas = document.getElementById('whiteboard-canvas');
 
-let localStream; 
+let localStream;
 let screenStream;
 let isCameraOn = true;
 const peers = {};
 
-// Audio analysis for speaking detection
 let audioContext = null;
 let localAnalyser = null;
 const remoteAnalysers = {};
@@ -70,14 +66,13 @@ const configWebRTC = {
 
 async function startCamera() {
     try {
-        localStream = await navigator.mediaDevices.getUserMedia({ 
-            video: { width: { ideal: 640 }, height: { ideal: 360 }, frameRate: { ideal: 15 } }, 
-            audio: true 
+        localStream = await navigator.mediaDevices.getUserMedia({
+            video: { width: { ideal: 640 }, height: { ideal: 360 }, frameRate: { ideal: 15 } },
+            audio: true
         });
         localVideo.srcObject = localStream;
         socket.connect();
 
-        // Setup local audio analysis for speaking indicator
         setupLocalAudioAnalysis();
     } catch (error) {
         console.error("Error accessing camera:", error);
@@ -106,7 +101,7 @@ function monitorSpeaking(userId, analyser) {
 
     function check() {
         if (!analyser) return;
-        
+
         // Handle Muted State
         let isMuted = false;
         if (userId === 'local') {
@@ -125,7 +120,7 @@ function monitorSpeaking(userId, analyser) {
                 speakingEl.classList.remove('is-talking');
             } else {
                 speakingEl.classList.remove('is-muted');
-                
+
                 analyser.getByteTimeDomainData(dataArray);
                 let sum = 0;
                 for (let i = 0; i < dataArray.length; i++) {
@@ -152,7 +147,7 @@ function monitorSpeaking(userId, analyser) {
 
 function createPeerConnection(userId) {
     const peerConnection = new RTCPeerConnection(configWebRTC);
-    peers[userId] = peerConnection; 
+    peers[userId] = peerConnection;
 
     const tracksToShare = screenStream ? screenStream.getTracks() : localStream.getTracks();
     tracksToShare.forEach(track => {
@@ -201,7 +196,6 @@ function createVideoContainer(userId) {
     video.autoplay = true;
     video.playsinline = true;
 
-    // Camera off overlay
     const cameraOff = document.createElement('div');
     cameraOff.className = 'camera-off-overlay hidden';
     cameraOff.id = `${userId}-camera-off`;
@@ -210,7 +204,6 @@ function createVideoContainer(userId) {
     avatar.innerText = userId.substring(0, 1).toUpperCase();
     cameraOff.appendChild(avatar);
 
-    // Speaking indicator
     const speaking = document.createElement('div');
     speaking.className = 'speaking-indicator';
     speaking.id = `${userId}-speaking`;
@@ -267,7 +260,7 @@ socket.on('webrtc_answer', async (data) => {
 socket.on('ice_candidate', async (data) => {
     const peerConnection = peers[data.sender];
     if (peerConnection) {
-        try { await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate)); } catch (e) {}
+        try { await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate)); } catch (e) { }
     }
 });
 
@@ -291,8 +284,7 @@ socket.on('room_change', (data) => {
         document.body.classList.add('breakout-mode');
         btnReturnAll.classList.remove('hidden');
         btnCreateGroups.classList.add('hidden');
-        
-        // Start local timer if duration was sent
+
         if (data.duration) {
             startBreakoutTimer(data.duration);
         }
@@ -318,16 +310,15 @@ function startBreakoutTimer(minutes) {
 
     display.classList.remove('hidden');
     let seconds = minutes * 60;
-    
+
     clearInterval(breakoutTimerInterval);
     breakoutTimerInterval = setInterval(() => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
         countdown.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        
+
         if (seconds <= 0) {
             clearInterval(breakoutTimerInterval);
-            // If we are the tutor, we notify the server to end
             if (role === 'Tutor' && spanRoomName.innerText !== roomID) {
                 socket.emit('end_breakout');
             }
@@ -349,7 +340,7 @@ btnCreateGroups.addEventListener('click', () => {
 document.getElementById('btn-start-breakout').addEventListener('click', () => {
     const size = parseInt(document.getElementById('group-size').value) || 4;
     const duration = parseInt(document.getElementById('breakout-duration').value) || 15;
-    
+
     socket.emit('request_breakout', { groupSize: size, duration: duration });
     document.getElementById('modal-breakout-config').classList.add('hidden');
 });
@@ -365,11 +356,10 @@ btnMute.addEventListener('click', () => {
     if (!localStream) return;
     const track = localStream.getAudioTracks()[0];
     if (track) {
-        track.enabled = !track.enabled; 
-        btnMute.innerHTML = track.enabled ? '<i class="ph ph-microphone"></i>' : '<i class="ph ph-microphone-slash"></i>'; 
+        track.enabled = !track.enabled;
+        btnMute.innerHTML = track.enabled ? '<i class="ph ph-microphone"></i>' : '<i class="ph ph-microphone-slash"></i>';
         btnMute.classList.toggle("off", !track.enabled);
-        
-        // Notify others
+
         socket.emit('toggle_audio', { enabled: track.enabled });
     }
 });
@@ -380,10 +370,9 @@ btnCamera.addEventListener('click', () => {
     if (track) {
         track.enabled = !track.enabled;
         isCameraOn = track.enabled;
-        btnCamera.innerHTML = track.enabled ? '<i class="ph ph-video-camera"></i>' : '<i class="ph ph-video-camera-slash"></i>'; 
+        btnCamera.innerHTML = track.enabled ? '<i class="ph ph-video-camera"></i>' : '<i class="ph ph-video-camera-slash"></i>';
         btnCamera.classList.toggle("off", !track.enabled);
 
-        // Show/hide camera-off overlay
         const localCameraOff = document.getElementById('local-camera-off');
         if (localCameraOff) {
             if (track.enabled) {
@@ -413,10 +402,10 @@ btnScreen.addEventListener('click', async () => {
             localVideo.srcObject = screenStream;
             localVideo.classList.remove('mirror');
             btnScreen.classList.add('active');
-            
+
             const screenTrack = screenStream.getVideoTracks()[0];
             screenTrack.onended = () => { btnScreen.click(); };
-            
+
             for (let id in peers) {
                 const sender = peers[id].getSenders().find(s => s.track.kind === 'video');
                 if (sender) sender.replaceTrack(screenTrack);
@@ -508,7 +497,7 @@ whiteboardCanvas.addEventListener('mouseleave', () => { isDrawing = false; });
 socket.on('draw_whiteboard', (data) => {
     const x = data.x * whiteboardCanvas.width;
     const y = data.y * whiteboardCanvas.height;
-    
+
     if (data.event === 'start') {
         ctx.beginPath();
         ctx.moveTo(x, y);
@@ -518,18 +507,16 @@ socket.on('draw_whiteboard', (data) => {
     }
 });
 
-// --- VALIDATION ---
 async function validateMeeting() {
-    const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username');
     const loadingOverlay = document.getElementById('loading-overlay');
     const invalidOverlay = document.getElementById('invalid-meeting-overlay');
 
-    if (!token) {
+    if (!username) {
         window.location.href = '/';
         return;
     }
 
-    // Don't validate if it's the default room (optional, but good for dev)
     if (roomID === 'MAIN-ROOM') {
         if (loadingOverlay) loadingOverlay.classList.add('hidden');
         startCamera();
@@ -538,18 +525,17 @@ async function validateMeeting() {
 
     try {
         const res = await fetch(`/api/classes/meetings/validate/${roomID}`, {
-            headers: { 'Authorization': `Bearer ${token}` }
+            credentials: 'include'
         });
-        
+
         if (!res.ok) {
             const errData = await res.json().catch(() => ({}));
             throw new Error(errData.error || 'Invalid meeting');
         }
-        
+
         const meeting = await res.json();
         if (spanRoomName) spanRoomName.innerText = meeting.name;
-        
-        // Success: Hide loading and start camera
+
         if (loadingOverlay) loadingOverlay.classList.add('hidden');
         startCamera();
     } catch (err) {

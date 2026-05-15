@@ -16,12 +16,12 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         const response = await fetch(`${API_URL}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify({ username, password })
         });
 
         const data = await response.json();
         if (response.ok) {
-            localStorage.setItem('token', data.token);
             localStorage.setItem('username', data.user.username);
             localStorage.setItem('role', data.user.role);
             window.location.href = '/classroom/';
@@ -43,12 +43,12 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
         const response = await fetch(`${API_URL}/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify({ username, password, role })
         });
 
         const data = await response.json();
         if (response.ok) {
-            localStorage.setItem('token', data.token);
             localStorage.setItem('username', data.user.username);
             localStorage.setItem('role', data.user.role);
             window.location.href = '/classroom/';
@@ -60,6 +60,6 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
     }
 });
 
-if (localStorage.getItem('token')) {
+if (localStorage.getItem('username')) {
     window.location.href = '/classroom/';
 }
