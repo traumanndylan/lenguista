@@ -15,4 +15,5 @@ jobs:
       - name: Rebuild Docker Containers
         run: |
           cd /lenguista
+          git pull origin main
           bash restart.sh
