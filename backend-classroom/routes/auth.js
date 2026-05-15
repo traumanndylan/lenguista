@@ -31,9 +31,15 @@ router.post('/register', async (req, res) => {
             { expiresIn: '24h' }
         );
 
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Lax',
+            maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        });
+
         res.status(201).json({
             message: 'User created successfully',
-            token,
             user: {
                 id: user._id,
                 username: user.username,
@@ -64,9 +70,15 @@ router.post('/login', async (req, res) => {
             { expiresIn: '24h' }
         );
 
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Lax',
+            maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        });
+
         res.json({
             message: 'Logged in successfully',
-            token,
             user: {
                 id: user._id,
                 username: user.username,
@@ -77,6 +89,11 @@ router.post('/login', async (req, res) => {
         console.error('Error in login:', err);
         res.status(500).json({ error: 'Server error during login' });
     }
+});
+
+router.post('/logout', (req, res) => {
+    res.clearCookie('token');
+    res.json({ message: 'Logged out successfully' });
 });
 
 module.exports = router;

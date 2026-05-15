@@ -1,14 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     const API_URL = `/api`;
 
-    const token = localStorage.getItem('token');
-    if (!token) {
+    const username = localStorage.getItem('username');
+    if (!username) {
         window.location.href = '/';
         return;
     }
 
     const role = localStorage.getItem('role') || 'Student';
-    const username = localStorage.getItem('username') || 'User';
 
     document.getElementById('user-name').innerText = username;
     document.getElementById('user-avatar').innerText = username.charAt(0).toUpperCase();
@@ -111,14 +110,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    }
+
     async function apiRequest(endpoint, method = 'GET', body = null) {
-        const headers = { 'Authorization': `Bearer ${token}` };
+        const headers = {};
         if (!(body instanceof FormData)) {
             headers['Content-Type'] = 'application/json';
             body = body ? JSON.stringify(body) : null;
         }
 
-        const res = await fetch(`${API_URL}${endpoint}`, { method, headers, body });
+        if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
+            const csrfToken = getCookie('XSRF-TOKEN');
+            if (csrfToken) {
+                headers['X-XSRF-TOKEN'] = csrfToken;
+            }
+        }
+
+        const res = await fetch(`${API_URL}${endpoint}`, { 
+            method, 
+            headers, 
+            body,
+            credentials: 'include'
+        });
         if (!res.ok) {
             if (res.status === 401 || res.status === 400) {
                 const err = await res.json();
@@ -740,8 +758,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     handleRouting();
 
-    document.getElementById('btn-logout').addEventListener('click', (e) => {
+    document.getElementById('btn-logout').addEventListener('click', async (e) => {
         e.preventDefault();
+        try {
+            await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+        } catch (e) {}
         localStorage.clear();
         window.location.href = '/';
     });
@@ -761,7 +782,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const res = await fetch(`/api/download/${driveId}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
+                credentials: 'include'
             });
             if (!res.ok) throw new Error("Failed to download file from backend");
 
