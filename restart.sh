@@ -2,6 +2,8 @@
 
 echo "Restarting Server"
 
-docker restart lenguista-video lenguista-classroom lenguista-frontend
+docker-compose stop backend-classroom backend-video frontend
+docker-compose rm -f backend-classroom backend-video frontend
+docker-compose up -d
 
 echo "Server Restarted"

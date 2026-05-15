@@ -14,7 +14,9 @@ const postSchema = new mongoose.Schema({
         type: { type: String, enum: ['file', 'link'] },
         name: String,
         url: String,
-        size: String
+        size: String,
+        driveId: String,
+        mimeType: String
     }]
 }, { timestamps: true });
 

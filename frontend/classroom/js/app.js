@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const API_URL = `/api`;
 
-    // Auth Check
     const token = localStorage.getItem('token');
     if (!token) {
         window.location.href = '/';
@@ -11,11 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const role = localStorage.getItem('role') || 'Student';
     const username = localStorage.getItem('username') || 'User';
 
-    // UI Updates
     document.getElementById('user-name').innerText = username;
     document.getElementById('user-avatar').innerText = username.charAt(0).toUpperCase();
 
-    // DOM Elements
     const btnActionClass = document.getElementById('btn-action-class');
     const actionClassText = document.getElementById('action-class-text');
 
@@ -32,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalCreateMeeting = document.getElementById('modal-create-meeting');
     const modalMeetingCreated = document.getElementById('modal-meeting-created');
 
-    // Config based on role
     if (role === 'Student') {
         actionClassText.innerText = 'Join a Class';
         btnActionClass.addEventListener('click', () => modalJoin.classList.remove('hidden'));
@@ -43,14 +39,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (tutorControls) tutorControls.classList.remove('hidden');
     }
 
-    // Join Meeting button (visible to all roles)
     document.getElementById('btn-join-meeting').addEventListener('click', () => {
         modalJoinMeeting.classList.remove('hidden');
     });
 
     const closeModals = () => {
         document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
-        // Clear validation errors when closing modals
         document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
         document.querySelectorAll('.has-error').forEach(el => el.classList.remove('has-error'));
     };
@@ -77,10 +71,8 @@ document.addEventListener('DOMContentLoaded', () => {
         renderMainView();
     });
 
-    // --- FORM VALIDATION ---
     function validateForm(form) {
         let isValid = true;
-        // Clear previous errors
         form.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
         form.querySelectorAll('.has-error').forEach(el => el.classList.remove('has-error'));
 
@@ -93,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Clear error on input
         form.querySelectorAll('[required]').forEach(input => {
             input.addEventListener('input', function handler() {
                 if (input.value.trim()) {
@@ -107,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return isValid;
     }
 
-    // --- CUSTOM FILE INPUT ---
     const fileInput = document.getElementById('assign-files');
     const fileNameDisplay = document.getElementById('assign-files-name');
     if (fileInput && fileNameDisplay) {
@@ -121,7 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // API Helpers
     async function apiRequest(endpoint, method = 'GET', body = null) {
         const headers = { 'Authorization': `Bearer ${token}` };
         if (!(body instanceof FormData)) {
@@ -131,7 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const res = await fetch(`${API_URL}${endpoint}`, { method, headers, body });
         if (!res.ok) {
-            // If token expired or invalid, redirect to login
             if (res.status === 401 || res.status === 400) {
                 const err = await res.json();
                 if (err.error && (err.error.includes('token') || err.error.includes('Token'))) {
@@ -147,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return res.json();
     }
 
-    // Modal Helpers
     function showError(title, message) {
         document.getElementById('error-title').innerText = title;
         document.getElementById('error-message').innerText = message;
@@ -173,7 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmCallback = null;
     });
 
-    // State
     let classes = [];
     let currentClass = null;
     let posts = [];
@@ -210,7 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Navigation
     document.getElementById('nav-classes').addEventListener('click', (e) => {
         e.preventDefault();
         currentClass = null;
@@ -264,7 +249,6 @@ document.addEventListener('DOMContentLoaded', () => {
             grid.appendChild(card);
         });
 
-        // Delete class bindings
         document.querySelectorAll('.btn-delete-class').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 const id = e.currentTarget.getAttribute('data-id');
@@ -302,7 +286,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loadPosts(currentClass._id);
     }
 
-    // --- FORMS ---
     const colorOptions = document.querySelectorAll('.color-option');
     colorOptions.forEach(opt => {
         opt.addEventListener('click', () => {
@@ -345,13 +328,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- JOIN MEETING ---
     document.getElementById('form-join-meeting').addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!validateForm(e.target)) return;
         const codeInput = document.getElementById('join-meeting-code');
         const code = codeInput.value.trim().toUpperCase();
-        
+
         const btn = e.target.querySelector('button[type="submit"]');
         btn.disabled = true;
         const originalText = btn.innerHTML;
@@ -369,7 +351,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- PROGRAM A MEETING ---
     document.getElementById('form-create-meeting').addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!validateForm(e.target)) return;
@@ -392,7 +373,6 @@ document.addEventListener('DOMContentLoaded', () => {
             closeModals();
             document.getElementById('form-create-meeting').reset();
 
-            // Show success modal with the code
             document.getElementById('meeting-code-result').innerText = meeting.code;
             document.getElementById('meeting-datetime-result').innerText =
                 new Date(meeting.scheduledAt).toLocaleString([], {
@@ -401,7 +381,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             modalMeetingCreated.classList.remove('hidden');
 
-            // Reload posts so the meeting appears in feed
             loadPosts(currentClass._id);
         } catch (err) {
             alert(err.message);
@@ -411,7 +390,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- POST CREATION ---
     document.getElementById('form-create-announcement').addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!validateForm(e.target)) return;
@@ -443,19 +421,28 @@ document.addEventListener('DOMContentLoaded', () => {
             const assignFileInput = document.getElementById('assign-files');
             let uploadedAttachments = [];
 
-            // Upload files one by one to Drive API
             if (assignFileInput.files.length > 0) {
                 for (let i = 0; i < assignFileInput.files.length; i++) {
-                    const file = assignFileInput.files[i];
+                    const originalFile = assignFileInput.files[i];
+                    const classSecret = currentClass.code;
+
+                    btnSubmit.innerText = `Encrypting ${originalFile.name}...`;
+                    const encryptedBlob = await window.E2EE.encryptFile(originalFile, classSecret);
+
+                    const encryptedFile = new File([encryptedBlob], originalFile.name + ".enc", { type: 'application/octet-stream' });
+
+                    btnSubmit.innerText = `Uploading ${originalFile.name}...`;
                     const formData = new FormData();
-                    formData.append('file', file);
+                    formData.append('file', encryptedFile);
 
                     const res = await apiRequest('/upload', 'POST', formData);
                     uploadedAttachments.push({
                         type: 'file',
-                        name: file.name,
-                        size: (file.size / 1024 / 1024).toFixed(2) + ' MB',
-                        url: `https://drive.google.com/file/d/${res.driveId}/view`
+                        name: originalFile.name,
+                        size: (encryptedFile.size / 1024 / 1024).toFixed(2) + ' MB',
+                        url: `https://drive.google.com/file/d/${res.driveId}/view`,
+                        driveId: res.driveId,
+                        mimeType: originalFile.type
                     });
                 }
             }
@@ -483,7 +470,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Feed
     function renderFeed() {
         const feedStream = document.getElementById('feed-stream');
         const emptyFeed = document.getElementById('empty-feed');
@@ -514,7 +500,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const dateString = dateObj.toLocaleDateString([], { month: 'short', day: 'numeric' });
                 const timeString = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                // Extra info line for meetings
                 let extraInfo = '';
                 if (post.type === 'meeting' && post.meetingDate) {
                     const meetDate = new Date(post.meetingDate);
@@ -550,7 +535,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Post View
     function openPostDetail(post) {
         currentPost = post;
         classInterface.classList.add('hidden');
@@ -572,7 +556,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const iconContainer = document.getElementById('post-detail-icon');
         iconContainer.innerHTML = `<i class="ph ph-${iconName}"></i>`;
 
-        // Meeting info
         const meetingInfo = document.getElementById('post-detail-meeting-info');
         if (post.type === 'meeting' && post.meetingCode) {
             meetingInfo.classList.remove('hidden');
@@ -586,7 +569,6 @@ document.addEventListener('DOMContentLoaded', () => {
             meetingInfo.classList.add('hidden');
         }
 
-        // Attachments
         const attachSection = document.getElementById('post-detail-attachments-section');
         const attachContainer = document.getElementById('post-detail-attachments');
         attachContainer.innerHTML = '';
@@ -596,10 +578,20 @@ document.addEventListener('DOMContentLoaded', () => {
             post.attachments.forEach(att => {
                 const isFile = att.type === 'file';
                 const el = document.createElement('a');
-                el.href = att.url || '#';
-                el.target = '_blank';
                 el.style.textDecoration = 'none';
                 el.className = 'attachment-card';
+
+                if (isFile && att.driveId) {
+                    el.href = 'javascript:void(0)';
+                    el.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        previewE2EEFile(att.driveId, att.name, att.mimeType, currentClass.code);
+                    });
+                } else {
+                    el.href = att.url || '#';
+                    el.target = '_blank';
+                }
+
                 el.innerHTML = `
                     <div style="width: 40px; height: 40px; border-radius: 8px; background: var(--bg-card-hover); display: flex; align-items: center; justify-content: center; font-size: 20px; color: ${isFile ? 'var(--class-red)' : 'var(--class-blue)'};">
                         <i class="ph ph-${isFile ? 'file-pdf' : 'link'}"></i>
@@ -609,8 +601,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div style="font-size: 0.8rem; color: var(--text-secondary);">${isFile ? att.size : 'Link'}</div>
                     </div>
                     <div class="attachment-overlay">
-                        <i class="ph ph-arrow-square-out"></i>
-                        <span>Open in new tab</span>
+                        <i class="ph ph-${isFile && att.driveId ? 'eye' : 'arrow-square-out'}"></i>
+                        <span>${isFile && att.driveId ? 'Preview Secure File' : 'Open in new tab'}</span>
                     </div>
                 `;
                 attachContainer.appendChild(el);
@@ -619,7 +611,6 @@ document.addEventListener('DOMContentLoaded', () => {
             attachSection.classList.add('hidden');
         }
 
-        // Submissions Panel (Student only, assignments only)
         const submissionPanel = document.getElementById('submission-panel');
         const tutorCommentsPanel = document.getElementById('tutor-comments-panel');
 
@@ -637,7 +628,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- PRIVATE COMMENTS (Student) ---
     async function loadPrivateComments(post) {
         const list = document.getElementById('private-comments-list');
         list.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.85rem; text-align: center; padding: 16px 0;">Loading...</p>';
@@ -688,17 +678,14 @@ document.addEventListener('DOMContentLoaded', () => {
             container.appendChild(bubble);
         });
 
-        // Scroll to bottom
         container.scrollTop = container.scrollHeight;
     }
 
-    // Send private comment (Student)
     document.getElementById('btn-send-private-comment').addEventListener('click', () => sendPrivateComment('student'));
     document.getElementById('private-comment-input').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') sendPrivateComment('student');
     });
 
-    // Send private comment (Tutor)
     document.getElementById('btn-tutor-send-comment').addEventListener('click', () => sendPrivateComment('tutor'));
     document.getElementById('tutor-private-comment-input').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') sendPrivateComment('tutor');
@@ -715,7 +702,6 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             await apiRequest(`/classes/${currentClass._id}/posts/${currentPost._id}/comments`, 'POST', { text });
 
-            // Reload comments
             if (viewAs === 'student') {
                 loadPrivateComments(currentPost);
             } else {
@@ -726,25 +712,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- ROUTING ---
     async function handleRouting() {
         const path = window.location.pathname;
         const parts = path.split('/').filter(p => p);
-        
-        // Expected parts: ["classroom", "CLASSCODE"]
+
         if (parts.length >= 2 && parts[0] === 'classroom') {
             const code = parts[1].toUpperCase();
             try {
-                // We need to find the class in our list or fetch it
-                // To keep it simple, we load all classes first then find
                 if (classes.length === 0) await loadClasses();
-                
+
                 const target = classes.find(c => c.code === code);
                 if (target) {
-                    openClass(target, false); // Don't push state again
+                    openClass(target, false);
                 } else {
-                    // Try to join/view if it's a valid code but not in our list?
-                    // For now, if not in list, just show main view
                     renderMainView();
                 }
             } catch (err) {
@@ -756,16 +736,97 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Handle browser back/forward
     window.addEventListener('popstate', handleRouting);
 
-    // Init
     handleRouting();
 
-    // Logout
     document.getElementById('btn-logout').addEventListener('click', (e) => {
         e.preventDefault();
         localStorage.clear();
         window.location.href = '/';
     });
+
+    async function previewE2EEFile(driveId, filename, mimeType, password) {
+        const modal = document.getElementById('modal-file-preview');
+        const loadingBox = document.getElementById('preview-loading');
+        const container = document.getElementById('preview-container');
+        const filenameEl = document.getElementById('preview-filename');
+        const downloadBtn = document.getElementById('btn-download-decrypted');
+
+        modal.classList.remove('hidden');
+        loadingBox.classList.remove('hidden');
+        container.classList.add('hidden');
+        container.innerHTML = '';
+        filenameEl.innerHTML = `<i class="ph ph-file" style="margin-right: 8px;"></i>${filename}`;
+
+        try {
+            const res = await fetch(`/api/download/${driveId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (!res.ok) throw new Error("Failed to download file from backend");
+
+            const encryptedBlob = await res.blob();
+
+            const decryptedBlob = await window.E2EE.decryptFile(encryptedBlob, password, mimeType);
+            const objectUrl = URL.createObjectURL(decryptedBlob);
+
+            downloadBtn.href = objectUrl;
+            downloadBtn.download = filename;
+
+            if (mimeType.startsWith('image/')) {
+                container.innerHTML = `<img src="${objectUrl}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
+            } else if (mimeType.startsWith('video/')) {
+                container.innerHTML = `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000; border-radius: 8px; overflow: hidden;">
+                    <video src="${objectUrl}" controls style="max-width: 100%; max-height: 100%; width: 100%; outline: none;"></video>
+                </div>`;
+            } else if (mimeType.startsWith('audio/')) {
+                container.innerHTML = `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); border-radius: 8px;">
+                    <div style="text-align: center; width: 100%; max-width: 400px; padding: 40px; background: var(--bg-card); border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                        <div style="width: 80px; height: 80px; background: var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                            <i class="ph ph-headphones" style="font-size: 40px; color: white;"></i>
+                        </div>
+                        <h3 style="color: white; margin-bottom: 24px; word-break: break-all;">${filename}</h3>
+                        <audio src="${objectUrl}" controls style="width: 100%; outline: none;"></audio>
+                    </div>
+                </div>`;
+            } else if (mimeType === 'application/pdf') {
+                container.innerHTML = `<iframe src="${objectUrl}" width="100%" height="100%" style="border: none; border-radius: 8px;"></iframe>`;
+            } else if (mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+                const arrayBuffer = await decryptedBlob.arrayBuffer();
+                try {
+                    const result = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
+                    container.innerHTML = `<div style="background: white; color: black; padding: 40px; border-radius: 8px; width: 100%; height: 100%; overflow-y: auto; text-align: left; box-sizing: border-box; font-family: 'Inter', sans-serif;">
+                        <div style="max-width: 800px; margin: 0 auto; line-height: 1.6;">${result.value}</div>
+                    </div>`;
+                } catch (err) {
+                    throw new Error("Failed to parse DOCX file");
+                }
+            } else if (mimeType.startsWith('text/') || mimeType === 'application/json' || mimeType === 'application/javascript') {
+                const text = await decryptedBlob.text();
+                const ext = filename.split('.').pop().toLowerCase();
+                const safeText = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                container.innerHTML = `<pre style="width: 100%; height: 100%; margin: 0; border-radius: 8px; overflow: hidden; font-size: 14px; text-align: left;"><code class="language-${ext}" style="width: 100%; height: 100%; display: block; overflow: auto; padding: 20px; box-sizing: border-box;">${safeText}</code></pre>`;
+                setTimeout(() => {
+                    if (window.hljs) hljs.highlightAll();
+                }, 10);
+            } else {
+                container.innerHTML = `<div style="color: white; text-align: center;">
+                    <i class="ph ph-file" style="font-size: 64px; margin-bottom: 16px; opacity: 0.5;"></i>
+                    <h3>No preview available for this file type</h3>
+                    <p style="color: rgba(255,255,255,0.7); margin-top: 8px;">Click "Save to Device" to download the decrypted file.</p>
+                </div>`;
+            }
+
+            loadingBox.classList.add('hidden');
+            container.classList.remove('hidden');
+
+        } catch (err) {
+            console.error(err);
+            loadingBox.innerHTML = `
+                <i class="ph ph-warning-circle" style="font-size: 48px; color: var(--class-red); margin-bottom: 16px;"></i>
+                <p style="color: var(--class-red);">Error decrypting file.</p>
+                <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 8px;">Are you sure you are in the correct class?</p>
+            `;
+        }
+    }
 });

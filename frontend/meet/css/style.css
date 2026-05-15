@@ -167,7 +167,6 @@ body {
     transform: scaleX(-1);
 }
 
-/* Camera off overlay */
 .camera-off-overlay {
     position: absolute;
     top: 0;
@@ -479,7 +478,6 @@ body.breakout-mode {
     background-color: var(--bg-dark);
 }
 
-/* Modals & Utility */
 .hidden {
     display: none !important;
 }

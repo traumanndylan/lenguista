@@ -28,15 +28,12 @@ const driveService = google.drive({ version: 'v3', auth: oauth2Client });
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://database:27017/lenguista')
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB connection error:', err));
 
-// Auth Routes
 app.use('/api/auth', authRoutes);
 
-// Classes Routes
 const classesRoutes = require('./routes/classes');
 app.use('/api/classes', classesRoutes);
 
@@ -57,7 +54,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 10 * 1024 * 1024 }
+    limits: { fileSize: 512 * 1024 * 1024 }
 });
 
 app.post('/api/upload', verifyToken, requireRole('Tutor'), upload.single('file'), async (req, res) => {
@@ -66,34 +63,73 @@ app.post('/api/upload', verifyToken, requireRole('Tutor'), upload.single('file')
     }
 
     try {
+        const fileSize = fs.statSync(req.file.path).size;
+        console.log(`\n[E2EE Upload] Received encrypted file: ${req.file.originalname}`);
+        console.log(`[E2EE Upload] Saved to temporary disk at ${req.file.path} (${(fileSize / 1024 / 1024).toFixed(2)} MB)`);
+
         const fileMetadata = {
             'name': req.file.originalname,
             'parents': [folderID]
         };
         const media = {
-            mimeType: req.file.mimetype,
+            mimeType: 'application/octet-stream',
             body: fs.createReadStream(req.file.path)
         };
+
+        console.log(`[E2EE Upload] Starting Resumable stream to Google Drive...`);
 
         const response = await driveService.files.create({
             requestBody: fileMetadata,
             media: media,
             fields: 'id, name'
+        }, {
+            onUploadProgress: evt => {
+                const progress = (evt.bytesRead / fileSize) * 100;
+                console.log(`[GDrive Progress] ${Math.round(progress)}% complete (${evt.bytesRead} / ${fileSize} bytes)`);
+            }
         });
 
-        // Cleanup: delete the local file after successful upload to Drive
         fs.unlink(req.file.path, (err) => {
-            if (err) console.error('Error deleting local file:', err);
+            if (err) {
+                console.error('[E2EE Upload] Error deleting local temp file:', err);
+            } else {
+                console.log(`[E2EE Upload] Upload finished! Local temp file deleted for maximum privacy.`);
+            }
         });
 
         res.json({
-            message: 'File uploaded successfully to Google Drive',
+            message: 'Encrypted file uploaded successfully to Google Drive',
             file: req.file.filename,
             driveId: response.data.id
         });
     } catch (error) {
-        console.error('Error uploading to Google Drive:', error);
+        console.error('[E2EE Upload] Error uploading to Google Drive:', error);
         res.status(500).json({ error: 'Error uploading to Google Drive', details: error.message });
+    }
+});
+
+
+app.get('/api/download/:driveId', verifyToken, async (req, res) => {
+    try {
+        const driveId = req.params.driveId;
+        const response = await driveService.files.get({
+            fileId: driveId,
+            alt: 'media'
+        }, { responseType: 'stream' });
+
+        res.setHeader('Content-Type', 'application/octet-stream');
+
+        response.data
+            .on('end', () => console.log(`[E2EE Download] Successfully streamed ${driveId} to client`))
+            .on('error', err => {
+                console.error('[E2EE Download] Stream error', err);
+                res.status(500).end();
+            })
+            .pipe(res);
+
+    } catch (error) {
+        console.error('[E2EE Download] Error downloading from Google Drive:', error);
+        res.status(500).json({ error: 'Error downloading file', details: error.message });
     }
 });
 

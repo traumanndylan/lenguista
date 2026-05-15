@@ -7,7 +7,6 @@ const Meeting = require('../models/Meeting');
 const PrivateComment = require('../models/PrivateComment');
 const { verifyToken, requireRole } = require('../middleware/auth');
 
-// Get all classes for the current user
 router.get('/', verifyToken, async (req, res) => {
     try {
         let classes;
@@ -22,11 +21,9 @@ router.get('/', verifyToken, async (req, res) => {
     }
 });
 
-// Create a new class (Tutor only)
 router.post('/', verifyToken, requireRole('Tutor'), async (req, res) => {
     try {
         const { name, description, color } = req.body;
-        // Generate a 6 character code
         let code;
         let isUnique = false;
         while (!isUnique) {
@@ -49,7 +46,6 @@ router.post('/', verifyToken, requireRole('Tutor'), async (req, res) => {
     }
 });
 
-// Join a class (Student only)
 router.post('/join', verifyToken, requireRole('Student'), async (req, res) => {
     try {
         const { code } = req.body;
@@ -68,7 +64,6 @@ router.post('/join', verifyToken, requireRole('Student'), async (req, res) => {
     }
 });
 
-// Delete a class (Tutor only)
 router.delete('/:id', verifyToken, requireRole('Tutor'), async (req, res) => {
     try {
         const targetClass = await Class.findOne({ _id: req.params.id, tutor: req.user.id });
@@ -83,7 +78,6 @@ router.delete('/:id', verifyToken, requireRole('Tutor'), async (req, res) => {
     }
 });
 
-// Get posts for a class
 router.get('/:classId/posts', verifyToken, async (req, res) => {
     try {
         const posts = await Post.find({ classId: req.params.classId }).sort({ createdAt: -1 });
@@ -93,7 +87,6 @@ router.get('/:classId/posts', verifyToken, async (req, res) => {
     }
 });
 
-// Create a post
 router.post('/:classId/posts', verifyToken, requireRole('Tutor'), async (req, res) => {
     try {
         const { type, author, title, text, score, due, attachments } = req.body;
@@ -119,7 +112,6 @@ router.post('/:classId/posts', verifyToken, requireRole('Tutor'), async (req, re
     }
 });
 
-// Delete a post (Tutor only)
 router.delete('/:classId/posts/:postId', verifyToken, requireRole('Tutor'), async (req, res) => {
     try {
         const targetClass = await Class.findOne({ _id: req.params.classId, tutor: req.user.id });
@@ -130,7 +122,6 @@ router.delete('/:classId/posts/:postId', verifyToken, requireRole('Tutor'), asyn
         const post = await Post.findById(req.params.postId);
         if (!post) return res.status(404).json({ error: 'Post not found' });
 
-        // If it's a meeting, we should also delete the meeting object
         if (post.type === 'meeting' && post.meetingCode) {
             await Meeting.deleteOne({ code: post.meetingCode });
         }
@@ -142,8 +133,6 @@ router.delete('/:classId/posts/:postId', verifyToken, requireRole('Tutor'), asyn
     }
 });
 
-
-// Validate a meeting code
 router.get('/meetings/validate/:code', verifyToken, async (req, res) => {
     try {
         const meeting = await Meeting.findOne({ code: req.params.code.toUpperCase() });
@@ -156,7 +145,6 @@ router.get('/meetings/validate/:code', verifyToken, async (req, res) => {
     }
 });
 
-// Create a meeting (Tutor only)
 router.post('/:classId/meetings', verifyToken, requireRole('Tutor'), async (req, res) => {
     try {
         const { name, description, scheduledAt } = req.body;
@@ -165,7 +153,6 @@ router.post('/:classId/meetings', verifyToken, requireRole('Tutor'), async (req,
             return res.status(404).json({ error: 'Class not found or unauthorized' });
         }
 
-        // Generate a unique 6-char meeting code
         let code;
         let isUnique = false;
         while (!isUnique) {
@@ -184,7 +171,6 @@ router.post('/:classId/meetings', verifyToken, requireRole('Tutor'), async (req,
         });
         await newMeeting.save();
 
-        // Also create a feed post so the meeting shows in the class stream
         const meetingPost = new Post({
             classId: targetClass._id,
             type: 'meeting',
@@ -203,7 +189,6 @@ router.post('/:classId/meetings', verifyToken, requireRole('Tutor'), async (req,
     }
 });
 
-// Get meetings for a class
 router.get('/:classId/meetings', verifyToken, async (req, res) => {
     try {
         const meetings = await Meeting.find({ classId: req.params.classId }).sort({ scheduledAt: 1 });
@@ -213,7 +198,6 @@ router.get('/:classId/meetings', verifyToken, async (req, res) => {
     }
 });
 
-// Create a private comment on a post
 router.post('/:classId/posts/:postId/comments', verifyToken, async (req, res) => {
     try {
         const { text } = req.body;

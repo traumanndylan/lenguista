@@ -138,7 +138,6 @@
                                     style="color: var(--text-primary); line-height: 1.6; margin-bottom: 24px; white-space: pre-wrap;">
                                     Description</div>
 
-                                <!-- Meeting info card (shown for meeting posts) -->
                                 <div id="post-detail-meeting-info" class="hidden"
                                     style="background: var(--bg-dark); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
                                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
@@ -189,7 +188,6 @@
                                     style="width: 100%; justify-content: center;">Turn in</button>
                             </div>
 
-                            <!-- Private Comments Section -->
                             <div class="card private-comments-card" style="margin-top: 16px;">
                                 <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 12px;">
                                     <i class="ph ph-lock-simple" style="margin-right: 6px;"></i>Private comments
@@ -210,7 +208,6 @@
                             </div>
                         </div>
 
-                        <!-- Tutor comments panel (shown for tutors viewing assignments) -->
                         <div id="tutor-comments-panel" class="hidden" style="width: 300px;">
                             <div class="card" style="margin-top: 0;">
                                 <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 12px;">
@@ -236,7 +233,6 @@
         </main>
     </div>
 
-    <!-- Create Class Modal -->
     <div id="modal-create-class" class="modal hidden">
         <div class="modal-content card">
             <h2 style="margin-bottom: 20px;">Create Class</h2>
@@ -275,7 +271,6 @@
         </div>
     </div>
 
-    <!-- Join Class Modal -->
     <div id="modal-join-class" class="modal hidden">
         <div class="modal-content card">
             <h2 style="margin-bottom: 20px;">Join Class</h2>
@@ -293,11 +288,10 @@
         </div>
     </div>
 
-    <!-- Join Meeting Modal -->
     <div id="modal-join-meeting" class="modal hidden">
         <div class="modal-content card">
-            <h2 style="margin-bottom: 20px;"><i class="ph ph-video-camera"
-                    style="margin-right: 8px;"></i>Join Meeting</h2>
+            <h2 style="margin-bottom: 20px;"><i class="ph ph-video-camera" style="margin-right: 8px;"></i>Join Meeting
+            </h2>
             <form id="form-join-meeting" novalidate>
                 <div class="input-group">
                     <label>Meeting Code</label>
@@ -313,7 +307,6 @@
         </div>
     </div>
 
-    <!-- Create Announcement Modal -->
     <div id="modal-create-announcement" class="modal hidden">
         <div class="modal-content card" style="max-width: 600px;">
             <h2 style="margin-bottom: 20px;">Create Announcement</h2>
@@ -336,7 +329,6 @@
         </div>
     </div>
 
-    <!-- Create Assignment Modal -->
     <div id="modal-create-assignment" class="modal hidden">
         <div class="modal-content card" style="max-width: 600px;">
             <h2 style="margin-bottom: 20px;">Create Assignment</h2>
@@ -377,11 +369,10 @@
         </div>
     </div>
 
-    <!-- Program a Meeting Modal -->
     <div id="modal-create-meeting" class="modal hidden">
         <div class="modal-content card" style="max-width: 500px;">
-            <h2 style="margin-bottom: 20px;"><i class="ph ph-video-camera"
-                    style="margin-right: 8px;"></i>Program a Meeting</h2>
+            <h2 style="margin-bottom: 20px;"><i class="ph ph-video-camera" style="margin-right: 8px;"></i>Program a
+                Meeting</h2>
             <form id="form-create-meeting" novalidate>
                 <div class="input-group">
                     <label>Meeting Name</label>
@@ -411,7 +402,6 @@
         </div>
     </div>
 
-    <!-- Meeting Created Success Modal -->
     <div id="modal-meeting-created" class="modal hidden">
         <div class="modal-content card" style="max-width: 420px; text-align: center;">
             <div
@@ -435,33 +425,74 @@
         </div>
     </div>
 
-    <!-- Confirmation Modal -->
     <div id="modal-confirm" class="modal hidden">
         <div class="modal-content card" style="max-width: 400px; text-align: center;">
-            <div id="confirm-icon-container" style="width: 64px; height: 64px; border-radius: 50%; background: #ef4444; color: white; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px;">
+            <div id="confirm-icon-container"
+                style="width: 64px; height: 64px; border-radius: 50%; background: #ef4444; color: white; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px;">
                 <i class="ph ph-trash"></i>
             </div>
             <h2 id="confirm-title" style="margin-bottom: 10px;">Are you sure?</h2>
-            <p id="confirm-message" style="color: var(--text-secondary); margin-bottom: 24px;">This action cannot be undone.</p>
+            <p id="confirm-message" style="color: var(--text-secondary); margin-bottom: 24px;">This action cannot be
+                undone.</p>
             <div style="display: flex; gap: 12px;">
-                <button id="btn-confirm-cancel" class="btn-secondary" style="flex: 1; justify-content: center;">Cancel</button>
-                <button id="btn-confirm-action" class="btn-primary" style="flex: 1; justify-content: center; background: #ef4444; border-color: #ef4444;">Delete</button>
+                <button id="btn-confirm-cancel" class="btn-secondary"
+                    style="flex: 1; justify-content: center;">Cancel</button>
+                <button id="btn-confirm-action" class="btn-primary"
+                    style="flex: 1; justify-content: center; background: #ef4444; border-color: #ef4444;">Delete</button>
             </div>
         </div>
     </div>
 
-    <!-- Error Modal -->
     <div id="modal-error" class="modal hidden">
         <div class="modal-content card" style="max-width: 400px; text-align: center;">
-            <div style="width: 64px; height: 64px; border-radius: 50%; background: #ef4444; color: white; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px;">
+            <div
+                style="width: 64px; height: 64px; border-radius: 50%; background: #ef4444; color: white; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px;">
                 <i class="ph ph-warning-circle"></i>
             </div>
             <h2 id="error-title" style="margin-bottom: 10px;">Error</h2>
-            <p id="error-message" style="color: var(--text-secondary); margin-bottom: 24px;">Something went wrong. Please try again.</p>
-            <button class="btn-primary" style="width: 100%; justify-content: center;" onclick="document.getElementById('modal-error').classList.add('hidden')">Close</button>
+            <p id="error-message" style="color: var(--text-secondary); margin-bottom: 24px;">Something went wrong.
+                Please try again.</p>
+            <button class="btn-primary" style="width: 100%; justify-content: center;"
+                onclick="document.getElementById('modal-error').classList.add('hidden')">Close</button>
         </div>
     </div>
 
+    <div id="modal-file-preview" class="modal hidden" style="z-index: 9999; background: rgba(0,0,0,0.95);">
+        <div class="modal-content"
+            style="max-width: 100vw; width: 100vw; height: 100vh; border-radius: 0; margin: 0; display: flex; flex-direction: column; padding: 20px 40px; background: transparent; border: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 id="preview-filename" style="color: white; font-size: 1.5rem;"><i class="ph ph-file"
+                        style="margin-right: 12px; color: var(--primary-color);"></i>Preview</h2>
+                <div style="display: flex; gap: 15px;">
+                    <a id="btn-download-decrypted" class="btn-primary" href="#" download
+                        style="text-decoration: none; border-radius: 8px; padding: 10px 20px;"><i
+                            class="ph ph-download-simple"></i> Save to Device</a>
+                    <button class="btn-secondary btn-icon-only"
+                        onclick="document.getElementById('modal-file-preview').classList.add('hidden')"
+                        style="width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.1); border: none; color: white;"><i
+                            class="ph ph-x" style="font-size: 20px;"></i></button>
+                </div>
+            </div>
+
+            <div id="preview-loading"
+                style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white;">
+                <i class="ph ph-spinner ph-spin"
+                    style="font-size: 64px; color: var(--primary-color); margin-bottom: 24px;"></i>
+                <p id="preview-status-text" style="font-size: 1.2rem; font-weight: 500;">Downloading and decrypting
+                    securely...</p>
+            </div>
+
+            <div id="preview-container" class="hidden"
+                style="flex: 1; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative;">
+            </div>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+
+    <script src="/classroom/js/crypto.js"></script>
     <script src="/classroom/js/app.js"></script>
 </body>
 
