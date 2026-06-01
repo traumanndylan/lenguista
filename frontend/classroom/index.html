@@ -9,6 +9,12 @@
     <link rel="stylesheet" href="/classroom/css/style.css">
     <link rel="icon" type="image/svg+xml" href="/resources/logo.svg">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+    </script>
 </head>
 
 <body>
@@ -23,10 +29,6 @@
                 <li class="active"><a href="#" id="nav-classes"><i class="ph ph-books"></i> Classes</a></li>
                 <li><a href="#"><i class="ph ph-calendar"></i> Calendar</a></li>
                 <li><a href="#"><i class="ph ph-pencil-simple"></i> To-do</a></li>
-                <hr style="border-color: var(--border-color); margin: 10px 0; border-top: none;">
-                <li><a href="#"><i class="ph ph-gear"></i> Settings</a></li>
-                <li><a href="#" id="btn-logout" style="color: var(--danger-color); margin-top: 20px;"><i
-                            class="ph ph-sign-out"></i> Logout</a></li>
             </ul>
         </nav>
 
@@ -42,8 +44,25 @@
                     <button id="btn-action-class" class="btn-primary" style="margin-right: 15px;">
                         <i class="ph ph-plus"></i> <span id="action-class-text">Action</span>
                     </button>
-                    <div id="user-avatar" class="avatar">U</div>
-                    <span id="user-name">User</span>
+                    <div id="user-menu-trigger" style="display: flex; align-items: center; gap: 10px; cursor: pointer; position: relative;">
+                        <div id="user-avatar" class="avatar">U</div>
+                        <span id="user-name">User</span>
+                        <i class="ph ph-caret-down" style="color: var(--text-secondary); margin-left: -2px;"></i>
+                        
+                        <div id="user-dropdown-menu" class="hidden card" style="position: absolute; top: calc(100% + 10px); right: 0; margin: 0; padding: 8px 0; width: 220px; z-index: 100; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                            <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); margin-bottom: 8px;">
+                                <p id="dropdown-user-name" style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">User Name</p>
+                                <p id="dropdown-user-role" style="font-size: 0.85rem; color: var(--text-secondary);">Role</p>
+                            </div>
+                            <ul class="dropdown-list">
+                                <li><a href="#"><i class="ph ph-user"></i> Profile</a></li>
+                                <li><a href="#"><i class="ph ph-gear"></i> Settings</a></li>
+                                <li><a href="#" id="btn-switch-theme"><i class="ph ph-moon"></i> Switch Theme</a></li>
+                                <li><hr style="border-color: var(--border-color); border-top: none; margin: 8px 0;"></li>
+                                <li><a href="#" id="btn-dropdown-logout" style="color: var(--danger-color);"><i class="ph ph-sign-out"></i> Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </header>
 
@@ -238,11 +257,11 @@
             <h2 style="margin-bottom: 20px;">Create Class</h2>
             <form id="form-create-class" novalidate>
                 <div class="input-group">
-                    <label>Class Name</label>
+                    <label>Class Name<span class="required-marker">*</span></label>
                     <input type="text" id="create-class-name" required class="modal-input">
                 </div>
                 <div class="input-group">
-                    <label>Description <span class="optional-marker">*</span></label>
+                    <label>Description</label>
                     <input type="text" id="create-class-desc" class="modal-input">
                 </div>
                 <div class="input-group">
@@ -276,7 +295,7 @@
             <h2 style="margin-bottom: 20px;">Join Class</h2>
             <form id="form-join-class" novalidate>
                 <div class="input-group">
-                    <label>Class Code</label>
+                    <label>Class Code<span class="required-marker">*</span></label>
                     <input type="text" id="join-class-code" required maxlength="6" style="text-transform: uppercase;"
                         class="modal-input">
                 </div>
@@ -294,7 +313,7 @@
             </h2>
             <form id="form-join-meeting" novalidate>
                 <div class="input-group">
-                    <label>Meeting Code</label>
+                    <label>Meeting Code<span class="required-marker">*</span></label>
                     <input type="text" id="join-meeting-code" required maxlength="6" style="text-transform: uppercase;"
                         class="modal-input">
                 </div>
@@ -312,11 +331,11 @@
             <h2 style="margin-bottom: 20px;">Create Announcement</h2>
             <form id="form-create-announcement" novalidate>
                 <div class="input-group">
-                    <label>Title</label>
+                    <label>Title<span class="required-marker">*</span></label>
                     <input type="text" id="announce-title" required maxlength="50" class="modal-input">
                 </div>
                 <div class="input-group">
-                    <label>Description</label>
+                    <label>Description<span class="required-marker">*</span></label>
                     <textarea id="announce-desc" required maxlength="1000" class="modal-input"
                         style="height: 100px; resize: none; font-family: 'Inter', sans-serif;"></textarea>
                 </div>
@@ -334,26 +353,26 @@
             <h2 style="margin-bottom: 20px;">Create Assignment</h2>
             <form id="form-create-assignment" novalidate>
                 <div class="input-group">
-                    <label>Title</label>
+                    <label>Title<span class="required-marker">*</span></label>
                     <input type="text" id="assign-title" required maxlength="50" class="modal-input">
                 </div>
                 <div class="input-group">
-                    <label>Description <span class="optional-marker">*</span></label>
+                    <label>Description</label>
                     <textarea id="assign-desc" maxlength="1000" class="modal-input"
                         style="height: 100px; resize: none; font-family: 'Inter', sans-serif;"></textarea>
                 </div>
                 <div style="display: flex; gap: 15px;">
                     <div class="input-group" style="flex: 1;">
-                        <label>Score <span class="optional-marker">*</span></label>
+                        <label>Score</label>
                         <input type="number" id="assign-score" class="modal-input">
                     </div>
                     <div class="input-group" style="flex: 1;">
-                        <label>Due Date <span class="optional-marker">*</span></label>
+                        <label>Due Date</label>
                         <input type="date" id="assign-due" class="modal-input">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label>Attachments <span class="optional-marker">*</span></label>
+                    <label>Attachments</label>
                     <label class="custom-file-input">
                         <input type="file" id="assign-files" multiple>
                         <span class="custom-file-btn"><i class="ph ph-upload-simple"></i> Choose Files</span>
@@ -375,21 +394,21 @@
                 Meeting</h2>
             <form id="form-create-meeting" novalidate>
                 <div class="input-group">
-                    <label>Meeting Name</label>
+                    <label>Meeting Name<span class="required-marker">*</span></label>
                     <input type="text" id="meeting-name" required maxlength="50" class="modal-input">
                 </div>
                 <div class="input-group">
-                    <label>Description <span class="optional-marker">*</span></label>
+                    <label>Description</label>
                     <textarea id="meeting-desc" maxlength="500" class="modal-input"
                         style="height: 80px; resize: none; font-family: 'Inter', sans-serif;"></textarea>
                 </div>
                 <div style="display: flex; gap: 15px;">
                     <div class="input-group" style="flex: 1;">
-                        <label>Date</label>
+                        <label>Date<span class="required-marker">*</span></label>
                         <input type="date" id="meeting-date" required class="modal-input">
                     </div>
                     <div class="input-group" style="flex: 1;">
-                        <label>Time</label>
+                        <label>Time<span class="required-marker">*</span></label>
                         <input type="time" id="meeting-time" required class="modal-input">
                     </div>
                 </div>

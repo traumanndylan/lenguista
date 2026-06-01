@@ -132,26 +132,62 @@ body {
     justify-content: center;
     align-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
     height: 100%;
     width: 100%;
-    padding-bottom: 80px;
+    padding: 16px;
+    padding-bottom: 96px;
 }
 
 .video-container {
     position: relative;
-    flex: 1 1 300px;
-    max-width: 48%;
-    max-height: 100%;
-    aspect-ratio: 16 / 9;
     background-color: var(--bg-card);
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    transition: box-shadow 0.3s ease;
+    transition: all 0.3s ease;
+    aspect-ratio: 16 / 9;
 }
 
+.grid-videos[data-users="1"] .video-container {
+    width: 100%;
+    max-width: calc((100vh - 160px) * 1.77);
+}
 
+.grid-videos[data-users="2"] .video-container {
+    width: calc(50% - 8px);
+    max-width: calc((100vh - 160px) * 1.77);
+}
+
+.grid-videos[data-users="3"] .video-container,
+.grid-videos[data-users="4"] .video-container {
+    width: calc(50% - 8px);
+    max-width: calc((50vh - 80px) * 1.77);
+}
+
+.grid-videos[data-users="5"] .video-container,
+.grid-videos[data-users="6"] .video-container {
+    width: calc(33.333% - 11px);
+    max-width: calc((50vh - 80px) * 1.77);
+}
+
+.grid-videos[data-users="7"] .video-container,
+.grid-videos[data-users="8"] .video-container,
+.grid-videos[data-users="9"] .video-container {
+    width: calc(33.333% - 11px);
+    max-width: calc((33.333vh - 53px) * 1.77);
+}
+
+.grid-videos[data-users="10"] .video-container,
+.grid-videos[data-users="11"] .video-container,
+.grid-videos[data-users="12"] .video-container,
+.grid-videos[data-users="13"] .video-container,
+.grid-videos[data-users="14"] .video-container,
+.grid-videos[data-users="15"] .video-container,
+.grid-videos[data-users="16"] .video-container {
+    width: calc(25% - 12px);
+    max-width: calc((25vh - 40px) * 1.77);
+}
 
 .video-container video {
     width: 100%;
@@ -509,7 +545,6 @@ body.breakout-mode {
     }
 }
 
-/* Teacher & Breakout Controls */
 .teacher-controls {
     display: flex;
     gap: 10px;

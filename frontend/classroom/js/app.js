@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+
     const API_URL = `/api`;
 
     const username = localStorage.getItem('username');
@@ -11,6 +16,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('user-name').innerText = username;
     document.getElementById('user-avatar').innerText = username.charAt(0).toUpperCase();
+
+    const dropdownUserName = document.getElementById('dropdown-user-name');
+    if (dropdownUserName) dropdownUserName.innerText = username;
+    
+    const dropdownUserRole = document.getElementById('dropdown-user-role');
+    if (dropdownUserRole) dropdownUserRole.innerText = role;
+
+    const userMenuTrigger = document.getElementById('user-menu-trigger');
+    const userDropdownMenu = document.getElementById('user-dropdown-menu');
+    
+    if (userMenuTrigger && userDropdownMenu) {
+        userMenuTrigger.addEventListener('click', (e) => {
+            userDropdownMenu.classList.toggle('hidden');
+            e.stopPropagation();
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!userMenuTrigger.contains(e.target)) {
+                userDropdownMenu.classList.add('hidden');
+            }
+        });
+
+        const btnSwitchTheme = document.getElementById('btn-switch-theme');
+        if (btnSwitchTheme) {
+            btnSwitchTheme.addEventListener('click', (e) => {
+                e.preventDefault();
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 
+                                     (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+        }
+
+        const btnDropdownLogout = document.getElementById('btn-dropdown-logout');
+        if (btnDropdownLogout) {
+            btnDropdownLogout.addEventListener('click', async (e) => {
+                e.preventDefault();
+                try {
+                    await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+                } catch (err) {}
+                localStorage.clear();
+                window.location.href = '/';
+            });
+        }
+    }
 
     const btnActionClass = document.getElementById('btn-action-class');
     const actionClassText = document.getElementById('action-class-text');
@@ -256,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h3 style="color: var(--text-primary); font-size: 1.2rem; pointer-events: none;">${cls.name}</h3>
                 </div>
                 <div class="class-body" style="pointer-events: none;">
-                    <p style="font-size: 0.95rem;">${cls.description || 'No description'}</p>
+                    <p style="font-size: 0.95rem;">${cls.description || ''}</p>
                 </div>
             `;
 
@@ -291,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
         classInterface.classList.remove('hidden');
 
         document.getElementById('class-title').innerText = currentClass.name;
-        document.getElementById('class-description').innerText = currentClass.description;
+        document.getElementById('class-description').innerText = currentClass.description || '';
         document.getElementById('class-code-display').innerText = currentClass.code;
         document.getElementById('class-banner').style.backgroundColor = currentClass.color;
 
@@ -757,15 +808,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('popstate', handleRouting);
 
     handleRouting();
-
-    document.getElementById('btn-logout').addEventListener('click', async (e) => {
-        e.preventDefault();
-        try {
-            await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-        } catch (e) {}
-        localStorage.clear();
-        window.location.href = '/';
-    });
 
     async function previewE2EEFile(driveId, filename, mimeType, password) {
         const modal = document.getElementById('modal-file-preview');

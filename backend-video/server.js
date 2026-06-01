@@ -11,6 +11,7 @@ const io = new Server(server, {
 });
 
 let connectedUsers = {};
+let originalRooms = {};
 
 function getUsersInRoom(roomName) {
     const clients = io.sockets.adapter.rooms.get(roomName);
@@ -23,6 +24,7 @@ io.on('connection', (socket) => {
 
     socket.join(roomID);
     connectedUsers[socket.id] = roomID;
+    originalRooms[socket.id] = roomID;
 
     socket.to(roomID).emit('new_peer', { userId: socket.id });
 
@@ -45,6 +47,7 @@ io.on('connection', (socket) => {
 
                 studentSocket.leave(currentRoom);
                 studentSocket.join(newRoomName);
+                connectedUsers[userId] = newRoomName;
 
                 io.to(userId).emit('room_change', { roomName: newRoomName, duration: duration });
 
@@ -56,10 +59,10 @@ io.on('connection', (socket) => {
     });
 
     socket.on('end_breakout', () => {
-        const originalRoom = connectedUsers[socket.id];
+        const originalRoom = originalRooms[socket.id];
 
-        Object.keys(connectedUsers).forEach(userId => {
-            if (connectedUsers[userId] === originalRoom) {
+        Object.keys(originalRooms).forEach(userId => {
+            if (originalRooms[userId] === originalRoom) {
                 const studentSocket = io.sockets.sockets.get(userId);
                 if (studentSocket) {
                     studentSocket.rooms.forEach(room => {
@@ -67,6 +70,7 @@ io.on('connection', (socket) => {
                     });
 
                     studentSocket.join(originalRoom);
+                    connectedUsers[userId] = originalRoom;
 
                     io.to(userId).emit('room_change', { roomName: originalRoom });
 
@@ -116,6 +120,7 @@ io.on('connection', (socket) => {
         console.log(`User disconnected: ${socket.id}`);
         const roomID = connectedUsers[socket.id];
         delete connectedUsers[socket.id];
+        delete originalRooms[socket.id];
         socket.broadcast.to(roomID).emit('peer_left', { userId: socket.id });
     });
 });

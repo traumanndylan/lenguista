@@ -185,6 +185,11 @@ function createPeerConnection(userId) {
     return peerConnection;
 }
 
+function updateGridLayout() {
+    const count = gridVideos.querySelectorAll('.video-container').length;
+    gridVideos.setAttribute('data-users', count);
+}
+
 function createVideoContainer(userId) {
     if (document.getElementById(`container-${userId}`)) return;
     const div = document.createElement('div');
@@ -218,6 +223,7 @@ function createVideoContainer(userId) {
     div.appendChild(speaking);
     div.appendChild(name);
     gridVideos.appendChild(div);
+    updateGridLayout();
 }
 
 function destroyVideoContainer(userId) {
@@ -228,6 +234,7 @@ function destroyVideoContainer(userId) {
         delete peers[userId];
     }
     delete remoteAnalysers[userId];
+    updateGridLayout();
 }
 
 socket.on('connect', () => console.log(`Connected to server, ID: ${socket.id}`));
@@ -448,64 +455,33 @@ function addChatMessage(sender, text, isMe) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-let isDrawing = false;
-const ctx = whiteboardCanvas.getContext('2d');
-ctx.strokeStyle = '#000000';
-ctx.lineWidth = 2;
-
-function resizeCanvas() {
-    whiteboardCanvas.width = whiteboardContainer.clientWidth;
-    whiteboardCanvas.height = whiteboardContainer.clientHeight;
-}
-window.addEventListener('resize', resizeCanvas);
-
 btnWhiteboard.addEventListener('click', () => {
-    whiteboardContainer.classList.toggle('hidden');
-    btnWhiteboard.classList.toggle('active');
-    if (!whiteboardContainer.classList.contains('hidden')) {
-        resizeCanvas();
-    }
+    alert('Whiteboard functionality is temporarily disabled.');
 });
 
-whiteboardCanvas.addEventListener('mousedown', (e) => {
-    isDrawing = true;
-    const rect = whiteboardCanvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    socket.emit('draw_whiteboard', { event: 'start', x: x / whiteboardCanvas.width, y: y / whiteboardCanvas.height });
-});
+const btnLeave = document.getElementById('btn-leave');
+if (btnLeave) {
+    btnLeave.addEventListener('click', () => {
+        socket.disconnect();
 
-whiteboardCanvas.addEventListener('mousemove', (e) => {
-    if (!isDrawing) return;
-    const rect = whiteboardCanvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    ctx.lineTo(x, y);
-    ctx.stroke();
-    socket.emit('draw_whiteboard', { event: 'draw', x: x / whiteboardCanvas.width, y: y / whiteboardCanvas.height });
-});
+        if (localStream) {
+            localStream.getTracks().forEach(track => track.stop());
+        }
+        if (screenStream) {
+            screenStream.getTracks().forEach(track => track.stop());
+        }
 
-whiteboardCanvas.addEventListener('mouseup', () => {
-    isDrawing = false;
-    socket.emit('draw_whiteboard', { event: 'end' });
-});
+        for (let id in peers) {
+            peers[id].close();
+            delete peers[id];
+        }
 
-whiteboardCanvas.addEventListener('mouseleave', () => { isDrawing = false; });
-
-socket.on('draw_whiteboard', (data) => {
-    const x = data.x * whiteboardCanvas.width;
-    const y = data.y * whiteboardCanvas.height;
-
-    if (data.event === 'start') {
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-    } else if (data.event === 'draw') {
-        ctx.lineTo(x, y);
-        ctx.stroke();
-    }
-});
+        const overlay = document.getElementById('leave-overlay');
+        if (overlay) {
+            overlay.classList.remove('hidden');
+        }
+    });
+}
 
 async function validateMeeting() {
     const username = localStorage.getItem('username');
@@ -552,3 +528,4 @@ async function validateMeeting() {
 }
 
 validateMeeting();
+updateGridLayout();

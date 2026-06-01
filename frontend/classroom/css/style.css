@@ -127,6 +127,26 @@ body {
     position: relative;
 }
 
+.dropdown-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown-list li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.dropdown-list li a:hover {
+    background-color: var(--bg-card-hover);
+}
+
 /* Dashboard Hero */
 .dashboard-hero {
     padding: 40px;
@@ -372,12 +392,11 @@ body {
     color: var(--error-color) !important;
 }
 
-/* Optional field marker */
-.optional-marker {
-    color: var(--text-secondary);
-    font-weight: 400;
-    font-size: 0.85rem;
-    margin-left: 2px;
+/* Required field marker */
+.required-marker {
+    color: var(--danger-color);
+    font-weight: 500;
+    font-size: 0.95rem;
 }
 
 .input-group {
