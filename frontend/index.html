@@ -5,68 +5,438 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lenguista</title>
-    <link rel="stylesheet" href="/css/auth.css">
+    <meta name="description"
+        content="Connect, learn, and collaborate in real-time. Lenguista provides end-to-end encrypted virtual classrooms, high-definition video meetings, breakout groups, and secure file sharing.">
+    <link rel="stylesheet" href="/css/homepage.css">
     <link rel="icon" type="image/svg+xml" href="/resources/logo.svg">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    </script>
 </head>
 
 <body>
-    <div class="auth-container">
-        <div class="auth-box card">
-            <div class="auth-header">
-                <div class="logo-ring">
-                    <img src="/resources/logo.svg" alt="Lenguista Logo" style="width: 64px; height: 64px;">
-                </div>
-                <h2>Welcome to Lenguista</h2>
-                <p>Sign in to Continue</p>
+
+    <!-- Navigation Header -->
+    <header class="navbar" id="navbar">
+        <a href="/" class="logo-container">
+            <img src="/resources/logo.svg" alt="Lenguista Logo">
+            <span class="logo-title">Lenguista</span>
+        </a>
+
+        <ul class="nav-menu">
+            <li><a href="#features" class="nav-link">Features</a></li>
+            <li><a href="#security" class="nav-link">Security</a></li>
+            <li><a href="/privacy_policy/" class="nav-link">Privacy</a></li>
+            <li><a href="/terms_of_service/" class="nav-link">Terms</a></li>
+        </ul>
+
+        <div class="nav-actions">
+            <button class="btn-theme-toggle" id="theme-toggle" title="Toggle Theme">
+                <i class="ph ph-sun" id="theme-icon"></i>
+            </button>
+
+            <!-- Dynamic auth actions: shown when logged out -->
+            <div id="auth-actions" style="display: flex; gap: 16px; align-items: center;">
+                <a href="/login" class="btn-nav-signin" id="btn-signin">Sign In</a>
+                <a href="/login" class="btn-gradient" id="btn-cta">Get Started <i class="ph ph-arrow-right"></i></a>
             </div>
 
-            <form id="login-form" class="auth-form active">
-                <div class="input-group">
-                    <label for="login-username">Username</label>
-                    <input type="text" id="login-username" required placeholder="Enter your username">
-                </div>
-                <div class="input-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" required placeholder="Enter your password">
-                </div>
-                <button type="submit" class="btn-primary">Sign In</button>
-                <p class="switch-form">Don't have an account? <span onclick="toggleForm('register')">Register
-                        here</span></p>
-            </form>
+            <!-- User menu: shown when logged in -->
+            <div id="user-menu-trigger" class="nav-user-badge" style="display: none; align-items: center; gap: 10px; cursor: pointer; position: relative;">
+                <div id="user-avatar" class="nav-user-avatar">U</div>
+                <span id="user-name" class="nav-user-name">User</span>
+                <i class="ph ph-caret-down" style="color: var(--text-secondary); font-size: 0.8rem;"></i>
 
-            <form id="register-form" class="auth-form">
-                <div class="input-group">
-                    <label for="register-username">Username</label>
-                    <input type="text" id="register-username" required placeholder="Choose a username">
+                <div id="user-dropdown-menu" style="display: none; position: absolute; top: calc(100% + 12px); right: 0; background: var(--card-bg); border-radius: 14px; padding: 8px 0; width: 210px; z-index: 200;">
+                    <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); margin-bottom: 6px;">
+                        <p id="dropdown-user-name" style="font-weight: 600; font-size: 0.9rem; color: var(--text-primary); margin-bottom: 2px;">User</p>
+                        <p id="dropdown-user-role" style="font-size: 0.78rem; color: var(--text-secondary);"></p>
+                    </div>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li><a href="/classroom/" style="display:flex; align-items:center; gap:10px; padding:9px 16px; text-decoration:none; color:var(--text-primary); font-size:0.9rem; border-radius:8px; transition:background 0.2s;" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background=''"><i class="ph ph-chalkboard-teacher"></i> Go to Classroom</a></li>
+                        <li><a href="#" id="nav-switch-theme" style="display:flex; align-items:center; gap:10px; padding:9px 16px; text-decoration:none; color:var(--text-primary); font-size:0.9rem; border-radius:8px; transition:background 0.2s;" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background=''"><i class="ph ph-moon" id="dropdown-theme-icon"></i> Switch Theme</a></li>
+                        <li><hr style="border-color: var(--border-color); border-top: none; margin: 6px 0;"></li>
+                        <li><a href="#" id="nav-logout" style="display:flex; align-items:center; gap:10px; padding:9px 16px; text-decoration:none; color:#ef4444; font-size:0.9rem; border-radius:8px; transition:background 0.2s;" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background=''"><i class="ph ph-sign-out"></i> Logout</a></li>
+                    </ul>
                 </div>
-                <div class="input-group">
-                    <label for="register-password">Password</label>
-                    <input type="password" id="register-password" required placeholder="Create a password">
-                </div>
-                <div class="input-group">
-                    <label for="register-role">I am a...</label>
-                    <select id="register-role" required>
-                        <option value="Student">Student</option>
-                        <option value="Tutor">Tutor</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn-primary">Create Account</button>
-                <p class="switch-form">Already have an account? <span onclick="toggleForm('login')">Sign In here</span>
-                </p>
-            </form>
-
-            <div id="error-message" class="error-message"></div>
-
-            <div class="auth-footer" style="margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border-color); text-align: center; font-size: 0.8rem; color: var(--text-secondary);">
-                By using Lenguista, you agree to our <br>
-                <a href="/terms_of_service" style="color: var(--primary-color); text-decoration: none; font-weight: 500;">Terms of Service</a> & 
-                <a href="/privacy_policy" style="color: var(--primary-color); text-decoration: none; font-weight: 500;">Privacy Policy</a>
             </div>
         </div>
-    </div>
-    <script src="/js/auth.js"></script>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+
+            <h1 class="hero-title" style="font-family: 'Outfit', sans-serif;">
+                Learn and connect without <span>boundaries</span>.
+            </h1>
+            <p class="hero-description">
+                A secure, end-to-end encrypted virtual classroom with real-time video meetings, breakout rooms, and
+                seamless file sharing built for tutors and students worldwide.
+            </p>
+            <div class="hero-buttons">
+                <a href="/login" class="btn-gradient hero-cta-btn" id="hero-btn-primary">Get Started for Free <i
+                        class="ph ph-arrow-right"></i></a>
+                <a href="#features" class="btn-outline">Explore Features</a>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <!-- Simulated application mockup -->
+            <div class="mockup-container">
+                <div class="mockup-header">
+                    <div class="mockup-dots">
+                        <div class="mockup-dot mockup-dot-red"></div>
+                        <div class="mockup-dot mockup-dot-yellow"></div>
+                        <div class="mockup-dot mockup-dot-green"></div>
+                    </div>
+                    <div class="mockup-title">Lenguista Dashboard</div>
+                    <div style="width: 14px;"></div>
+                </div>
+                <div class="mockup-body">
+                    <div class="mockup-sidebar">
+                        <div class="mockup-sb-logo">
+                            <i class="ph ph-books" style="color: var(--primary-color);"></i>
+                            <span>Lenguista</span>
+                        </div>
+                        <div class="mockup-sb-item active">
+                            <i class="ph ph-chalkboard-teacher"></i>
+                            <div class="mockup-sb-text"></div>
+                        </div>
+                        <div class="mockup-sb-item">
+                            <i class="ph ph-calendar"></i>
+                            <div class="mockup-sb-text"></div>
+                        </div>
+                        <div class="mockup-sb-item">
+                            <i class="ph ph-chat-text"></i>
+                            <div class="mockup-sb-text"></div>
+                        </div>
+                    </div>
+                    <div class="mockup-main">
+                        <div class="mockup-dashboard-header">
+                            <div class="mockup-dash-title"></div>
+                            <div class="mockup-dash-btn"></div>
+                        </div>
+                        <div class="mockup-grid">
+                            <div class="mockup-card">
+                                <div class="mockup-card-banner" style="background-color: var(--class-blue);"></div>
+                                <div class="mockup-card-title"></div>
+                                <div class="mockup-card-desc"></div>
+                            </div>
+                            <div class="mockup-card">
+                                <div class="mockup-card-banner" style="background-color: var(--class-purple);"></div>
+                                <div class="mockup-card-title"></div>
+                                <div class="mockup-card-desc"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Floating Glassmorphic WebRTC Call Visual Overlay -->
+                <div class="mockup-overlay-meeting">
+                    <div class="meeting-header">
+                        <span class="meeting-badge"><i class="ph ph-record"></i> Live Session</span>
+                        <i class="ph ph-microphone-slash" style="color: var(--text-secondary); font-size: 0.8rem;"></i>
+                    </div>
+                    <div class="meeting-grid">
+                        <div class="meeting-user">
+                            <div class="meeting-avatar" style="background: var(--class-red);">T</div>
+                            <span class="meeting-user-name">Tutor Alex</span>
+                        </div>
+                        <div class="meeting-user">
+                            <div class="meeting-avatar" style="background: var(--class-green);">S</div>
+                            <span class="meeting-user-name">Sarah</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bento Features Section -->
+    <section class="features-section" id="features">
+        <div class="section-header">
+            <span class="section-subtitle">Features</span>
+            <h2 class="section-title" style="font-family: 'Outfit', sans-serif;">Everything you need to teach and learn.
+            </h2>
+        </div>
+
+        <div class="bento-grid">
+            <!-- Feature 1: Video Sessions -->
+            <div class="bento-card bento-span-2-w bento-span-2-h">
+                <div class="bento-icon"><i class="ph ph-video-camera"></i></div>
+                <div class="bento-card-visual" style="margin-top: 20px;">
+                    <div
+                        style="display: flex; gap: 20px; align-items: center; background: var(--bg-dark); padding: 24px; border-radius: 16px; border: 1px solid var(--border-color); width: 85%;">
+                        <div
+                            style="flex: 1; text-align: center; border-right: 1px solid var(--border-color); padding-right: 20px;">
+                            <div
+                                style="font-size: 2.2rem; font-weight: 700; color: var(--primary-color); margin-bottom: 4px;">
+                                HD</div>
+                            <div
+                                style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 600;">
+                                WebRTC Video</div>
+                        </div>
+                        <div style="flex: 1.5; display: flex; flex-direction: column; gap: 10px;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem;"><i
+                                    class="ph ph-check-circle" style="color: var(--success-color);"></i> Breakout Groups
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem;"><i
+                                    class="ph ph-check-circle" style="color: var(--success-color);"></i> Real-time Chat
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem;"><i
+                                    class="ph ph-check-circle" style="color: var(--success-color);"></i> Screen Sharing
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="bento-card-title">Real-Time HD Meetings</h3>
+                    <p class="bento-card-desc">Experience web-native video sessions. Divide students into customizable
+                        breakout groups for language practice and bring them back instantly when ready.</p>
+                </div>
+            </div>
+
+            <!-- Feature 2: End-to-End Encryption -->
+            <div class="bento-card bento-span-2-h">
+                <div class="bento-icon"
+                    style="color: var(--success-color); background: rgba(34, 197, 94, 0.07); border-color: rgba(34, 197, 94, 0.1);">
+                    <i class="ph ph-shield-check"></i>
+                </div>
+                <div class="bento-card-visual">
+                    <div class="encryption-mockup">
+                        <div class="enc-row">
+                            <div class="enc-file-info">
+                                <i class="ph ph-file-pdf enc-file-icon"></i>
+                                <span>Curriculum.pdf</span>
+                            </div>
+                            <span class="enc-status"><i class="ph ph-shield-check"></i> Secure</span>
+                        </div>
+                        <div
+                            style="text-align: center; color: var(--text-secondary); font-size: 0.75rem; display: flex; justify-content: center; align-items: center; gap: 6px;">
+                            <i class="ph ph-lock-key" style="color: var(--primary-color);"></i> AES-GCM Client Encrypted
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="bento-card-title">Hardware-Accelerated E2EE</h3>
+                    <p class="bento-card-desc">All files uploaded to Google Drive are encrypted client-side using the
+                        Web Crypto API. Tutors hold the keys, ensuring total material privacy.</p>
+                </div>
+            </div>
+
+            <!-- Feature 3: Secure Previewer -->
+            <div class="bento-card">
+                <div class="bento-icon"><i class="ph ph-eye"></i></div>
+                <div>
+                    <h3 class="bento-card-title">Secure File Preview</h3>
+                    <p class="bento-card-desc">Preview PDF, DOCX, Code files, and media directly in the app. Decryption
+                        happens safely on your device in real-time.</p>
+                </div>
+            </div>
+
+            <!-- Feature 4: Classroom Management -->
+            <div class="bento-card bento-span-2-w">
+                <div class="bento-icon"><i class="ph ph-notebook"></i></div>
+                <div>
+                    <h3 class="bento-card-title">Unified Feed & Assignment Management</h3>
+                    <p class="bento-card-desc">Create assignments with score values and due dates, post announcements,
+                        share materials, and leave private remarks directly to your students.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security & Compliance Section -->
+    <section class="security-section" id="security">
+        <div class="security-container">
+            <div>
+                <span class="section-subtitle">Privacy & Compliance</span>
+                <h2 class="section-title" style="margin-bottom: 24px; font-family: 'Outfit', sans-serif;">Designed for
+                    enterprise-level security.</h2>
+                <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 32px;">
+                    We believe privacy is a fundamental right. Lenguista utilizes modern browser capabilities to build a
+                    trustless environment where files are stored encrypted on Google Drive and authenticated using
+                    secure, cookie-based session management.
+                </p>
+                <a href="/privacy_policy/" class="btn-outline">Read Privacy Policy <i
+                        class="ph ph-arrow-square-out"></i></a>
+            </div>
+
+            <div class="security-badge-group">
+                <div class="security-badge-item">
+                    <div class="security-badge-icon"><i class="ph ph-lock"></i></div>
+                    <div>
+                        <h4 class="security-badge-title">Zero-Knowledge Storage</h4>
+                        <p class="security-badge-desc">Nobody can access class documents unless they have been
+                            explicitly invited with the classroom secret code.</p>
+                    </div>
+                </div>
+
+                <div class="security-badge-item">
+                    <div class="security-badge-icon"><i class="ph ph-cookie"></i></div>
+                    <div>
+                        <h4 class="security-badge-title">Secure Authentication</h4>
+                        <p class="security-badge-desc">Cookie-based security mechanisms defend user sessions against
+                            Cross-Site Request Forgery (CSRF) and theft.</p>
+                    </div>
+                </div>
+
+                <div class="security-badge-item">
+                    <div class="security-badge-icon"><i class="ph ph-shield-check"></i></div>
+                    <div>
+                        <h4 class="security-badge-title">Fully Transparent</h4>
+                        <p class="security-badge-desc">Strictly adheres to policy guidelines, and does not sell or share
+                            student or tutor data with any advertising network.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Footer Banner -->
+    <section class="cta-banner">
+        <h2 class="cta-title" style="font-family: 'Outfit', sans-serif;">Ready to transform your classroom?</h2>
+        <p class="cta-desc">Join thousands of language tutors and students collaborating in a high-security, beautiful
+            classroom environment.</p>
+        <a href="/login" class="btn-gradient" id="cta-btn-footer"
+            style="padding: 16px 36px; font-size: 1.1rem; border-radius: 12px;">Get Started Free <i
+                class="ph ph-arrow-right"></i></a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <a href="/" class="footer-brand">
+                <img src="/resources/logo.svg" alt="Lenguista Logo">
+                <span>Lenguista</span>
+            </a>
+
+            <div class="footer-links">
+                <a href="#features" class="footer-link">Features</a>
+                <a href="#security" class="footer-link">Security</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div>&copy; 2026 Lenguista. All rights reserved.</div>
+            <div class="footer-policy-links">
+                <a href="/privacy_policy/" class="footer-policy-link">Privacy Policy</a>
+                <span>&middot;</span>
+                <a href="/terms_of_service/" class="footer-policy-link">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive script to handle Dynamic Auth CTA and Theme Toggle -->
+    <script>
+        // Navbar Scrolled Effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Theme Toggle Handler
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.className = 'ph ph-sun';
+            } else {
+                themeIcon.className = 'ph ph-moon';
+            }
+        }
+
+        // Set initial icon
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        updateThemeIcon(currentTheme);
+
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+
+        // Dynamic Auth Checker
+        const username = localStorage.getItem('username');
+        const role = localStorage.getItem('role') || '';
+        if (username) {
+            document.getElementById('auth-actions').style.display = 'none';
+
+            const trigger = document.getElementById('user-menu-trigger');
+            trigger.style.display = 'flex';
+
+            document.getElementById('user-avatar').innerText = username.charAt(0).toUpperCase();
+            document.getElementById('user-name').innerText = username;
+            document.getElementById('dropdown-user-name').innerText = username;
+            document.getElementById('dropdown-user-role').innerText = role;
+
+            // Dropdown toggle
+            const dropdown = document.getElementById('user-dropdown-menu');
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            });
+            document.addEventListener('click', () => { dropdown.style.display = 'none'; });
+
+            // Theme toggle inside dropdown
+            document.getElementById('nav-switch-theme').addEventListener('click', (e) => {
+                e.preventDefault();
+                const t = document.documentElement.getAttribute('data-theme');
+                const next = t === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+                updateThemeIcon(next);
+                document.getElementById('dropdown-theme-icon').className = next === 'dark' ? 'ph ph-sun' : 'ph ph-moon';
+            });
+
+            // Logout
+            document.getElementById('nav-logout').addEventListener('click', async (e) => {
+                e.preventDefault();
+                try { await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' }); } catch (_) {}
+                localStorage.clear();
+                window.location.href = '/login';
+            });
+
+            // Update CTA buttons
+            const heroBtn = document.getElementById('hero-btn-primary');
+            if (heroBtn) {
+                heroBtn.textContent = 'Go to Classroom ';
+                heroBtn.href = '/classroom/';
+                const a = document.createElement('i');
+                a.className = 'ph ph-arrow-right';
+                heroBtn.appendChild(a);
+            }
+
+            const footerBtn = document.getElementById('cta-btn-footer');
+            if (footerBtn) {
+                footerBtn.textContent = 'Go to Classroom ';
+                footerBtn.href = '/classroom/';
+                const a = document.createElement('i');
+                a.className = 'ph ph-arrow-right';
+                footerBtn.appendChild(a);
+            }
+        }
+    </script>
 </body>
 
 </html>

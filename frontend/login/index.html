@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In | Lenguista</title>
+    <link rel="stylesheet" href="/css/auth.css">
+    <link rel="icon" type="image/svg+xml" href="/resources/logo.svg">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    </script>
+</head>
+
+<body>
+    <div class="auth-split">
+
+        <!-- Left decorative panel -->
+        <div class="auth-panel">
+            <a href="/" class="auth-panel-logo">
+                <img src="/resources/logo.svg" alt="Lenguista Logo">
+                <span>Lenguista</span>
+            </a>
+
+            <h1 class="auth-panel-heading">
+                Your classroom,<br><span>reimagined</span>.
+            </h1>
+            <p class="auth-panel-desc">
+                A secure, end-to-end encrypted platform for language tutors and students. Collaborate in real-time from anywhere in the world.
+            </p>
+
+            <div class="auth-panel-features">
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon"><i class="ph ph-video-camera"></i></div>
+                    <span>HD video meetings with breakout rooms</span>
+                </div>
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon"><i class="ph ph-shield-check"></i></div>
+                    <span>Client-side AES-GCM encrypted file storage</span>
+                </div>
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon"><i class="ph ph-notebook"></i></div>
+                    <span>Assignments, announcements & private remarks</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right form panel -->
+        <div class="auth-container">
+            <div class="auth-box card">
+                <div class="auth-header">
+                    <div class="logo-ring">
+                        <img src="/resources/logo.svg" alt="Lenguista Logo" style="width: 56px; height: 56px;">
+                    </div>
+                    <h2>Welcome back</h2>
+                    <p>Sign in to your Lenguista account</p>
+                </div>
+
+                <form id="login-form" class="auth-form active">
+                    <div class="input-group">
+                        <label for="login-username">Username</label>
+                        <input type="text" id="login-username" required placeholder="Enter your username">
+                    </div>
+                    <div class="input-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required placeholder="Enter your password">
+                    </div>
+                    <button type="submit" class="btn-primary">Sign In</button>
+                    <p class="switch-form">Don't have an account? <span onclick="toggleForm('register')">Register here</span></p>
+                </form>
+
+                <form id="register-form" class="auth-form">
+                    <div class="input-group">
+                        <label for="register-username">Username</label>
+                        <input type="text" id="register-username" required placeholder="Choose a username">
+                    </div>
+                    <div class="input-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" id="register-password" required placeholder="Create a password">
+                    </div>
+                    <div class="input-group">
+                        <label for="register-role">I am a...</label>
+                        <select id="register-role" required>
+                            <option value="Student">Student</option>
+                            <option value="Tutor">Tutor</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary">Create Account</button>
+                    <p class="switch-form">Already have an account? <span onclick="toggleForm('login')">Sign In here</span></p>
+                </form>
+
+                <div id="error-message" class="error-message"></div>
+
+                <div class="auth-footer">
+                    By using Lenguista, you agree to our<br>
+                    <a href="/terms_of_service/">Terms of Service</a> &amp;
+                    <a href="/privacy_policy/">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="/js/auth.js"></script>
+</body>
+</html>

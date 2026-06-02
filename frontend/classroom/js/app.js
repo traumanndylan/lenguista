@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const username = localStorage.getItem('username');
     if (!username) {
-        window.location.href = '/';
+        window.location.href = '/login';
         return;
     }
 
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
                 } catch (err) {}
                 localStorage.clear();
-                window.location.href = '/';
+                window.location.href = '/login';
             });
         }
     }
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const err = await res.json();
                 if (err.error && (err.error.includes('token') || err.error.includes('Token'))) {
                     localStorage.clear();
-                    window.location.href = '/';
+                    window.location.href = '/login';
                     return;
                 }
                 throw new Error(err.error || 'API Error');

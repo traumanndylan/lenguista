@@ -489,7 +489,7 @@ async function validateMeeting() {
     const invalidOverlay = document.getElementById('invalid-meeting-overlay');
 
     if (!username) {
-        window.location.href = '/';
+        window.location.href = '/login';
         return;
     }
 
